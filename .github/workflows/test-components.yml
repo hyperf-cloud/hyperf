@@ -260,7 +260,7 @@ jobs:
           composer remove bandwidth-throttle/token-bucket --dev -W
           composer remove friendsofphp/php-cs-fixer --dev -W
           composer remove zircote/swagger-php --dev -W
-          composer remove "symfony/*" --dev -W
+          composer remove "symfony/*" --dev --no-update
       - name: Run Test Cases
         run: |
           ./.travis/requirement.install.sh
@@ -268,14 +268,14 @@ jobs:
           then
             composer require "monolog/monolog:^2.0"
           fi
-          composer require "psr/log:${{ matrix.log-version }}"
+          composer require "psr/log:${{ matrix.log-version }}" --no-update
           if [ ${{ matrix.log-version }} == '^3.0' ]
           then
-            composer require "symfony/console:^6.0" --dev -W
+            composer require "symfony/console:^6.0" --dev --no-update
           else
-            composer require "symfony/console:^5.0" --dev -W
+            composer require "symfony/console:^5.0" --dev --no-update
           fi
-          composer require symfony/event-dispatcher --dev -W
+          composer require symfony/event-dispatcher --dev --no-update
           composer update -oW
           composer analyse src/framework
           composer analyse src/server/src/Entry/Logger.php
