@@ -22,7 +22,7 @@
         "hyperf/utils": "~3.1.0",
         "hyperf/support": "~3.1.0",
         "hyperf/tappable": "~3.1.0",
-        "nesbot/carbon": "^2.0"
+        "nesbot/carbon": "^2.0|^3.0"
     },
     "autoload": {
         "psr-4": {
