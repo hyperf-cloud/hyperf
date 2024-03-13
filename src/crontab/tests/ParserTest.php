@@ -62,7 +62,7 @@ class ParserTest extends TestCase
             '2019-06-21 01:47:33',
             '2019-06-21 01:47:44',
             '2019-06-21 01:47:55',
-        ], $this->toDatatime($result));
+        ], $this->toDateTime($result));
         /** @var Carbon $last */
         $last = end($result);
         $result = $parser->parse($crontabString, $last->getTimestamp(), $this->timezone);
@@ -73,7 +73,7 @@ class ParserTest extends TestCase
             '2019-06-21 01:48:28',
             '2019-06-21 01:48:39',
             '2019-06-21 01:48:50',
-        ], $this->toDatatime($result));
+        ], $this->toDateTime($result));
     }
 
     public function testParseSecondLevelBetween(): void
@@ -89,7 +89,7 @@ class ParserTest extends TestCase
             '2020-06-10 09:58:13',
             '2020-06-10 09:58:14',
             '2020-06-10 09:58:15',
-        ], $this->toDatatime($result));
+        ], $this->toDateTime($result));
     }
 
     public function testParseSecondLevelForComma(): void
@@ -104,7 +104,7 @@ class ParserTest extends TestCase
             '2020-06-10 09:58:12',
             '2020-06-10 09:58:14',
             '2020-06-10 09:58:15',
-        ], $this->toDatatime($result));
+        ], $this->toDateTime($result));
     }
 
     public function testParseSecondLevelWithoutBackslash(): void
@@ -119,7 +119,7 @@ class ParserTest extends TestCase
             '2020-06-10 09:58:12',
             '2020-06-10 09:58:14',
             '2020-06-10 09:58:15',
-        ], $this->toDatatime($result));
+        ], $this->toDateTime($result));
     }
 
     public function testParseSecondLevelWithEmptyString()
@@ -132,7 +132,7 @@ class ParserTest extends TestCase
             '2020-06-10 09:58:10',
             '2020-06-10 09:58:14',
             '2020-06-10 09:58:15',
-        ], $this->toDatatime($result));
+        ], $this->toDateTime($result));
     }
 
     public function testParseMinuteLevelBetween(): void
@@ -148,7 +148,7 @@ class ParserTest extends TestCase
             '2020-06-10 10:10:13',
             '2020-06-10 10:10:14',
             '2020-06-10 10:10:15',
-        ], $this->toDatatime($result));
+        ], $this->toDateTime($result));
 
         $last = end($result);
         $result = $parser->parse($crontabString, $last->addMinute()->startOfMinute(), $this->timezone);
@@ -159,7 +159,7 @@ class ParserTest extends TestCase
             '2020-06-10 10:11:13',
             '2020-06-10 10:11:14',
             '2020-06-10 10:11:15',
-        ], $this->toDatatime($result));
+        ], $this->toDateTime($result));
 
         $last = end($result);
         $result = $parser->parse($crontabString, $last->addMinute()->startOfMinute(), $this->timezone);
@@ -171,12 +171,12 @@ class ParserTest extends TestCase
             '2020-06-10 10:12:13',
             '2020-06-10 10:12:14',
             '2020-06-10 10:12:15',
-        ], $this->toDatatime($result));
+        ], $this->toDateTime($result));
 
         $last = end($result);
         $result = $parser->parse($crontabString, $last->addMinute()->startOfMinute(), $this->timezone);
 
-        $this->assertSame([], $this->toDatatime($result));
+        $this->assertSame([], $this->toDateTime($result));
     }
 
     public function testParseSecondLevelWithCarbonStartTime()
@@ -192,7 +192,7 @@ class ParserTest extends TestCase
             '2019-06-21 01:47:33',
             '2019-06-21 01:47:44',
             '2019-06-21 01:47:55',
-        ], $this->toDatatime($result));
+        ], $this->toDateTime($result));
         /** @var Carbon $last */
         $last = end($result);
         $result = $parser->parse($crontabString, $last, $this->timezone);
@@ -203,7 +203,7 @@ class ParserTest extends TestCase
             '2019-06-21 01:48:28',
             '2019-06-21 01:48:39',
             '2019-06-21 01:48:50',
-        ], $this->toDatatime($result));
+        ], $this->toDateTime($result));
     }
 
     public function testParseMinuteLevel()
@@ -212,18 +212,18 @@ class ParserTest extends TestCase
         $parser = new Parser();
         $startTime = Carbon::createFromTimestamp(1561052867, $this->timezone)->startOfMinute();
         $result = $parser->parse($crontabString, $startTime->getTimestamp(), $this->timezone);
-        $this->assertSame([], $this->toDatatime($result));
+        $this->assertSame([], $this->toDateTime($result));
 
         $startTime->minute(33);
         $result = $parser->parse($crontabString, $startTime->getTimestamp(), $this->timezone);
-        $this->assertSame(['2019-06-21 01:33:00'], $this->toDatatime($result));
+        $this->assertSame(['2019-06-21 01:33:00'], $this->toDateTime($result));
     }
 
     /**
      * @param Carbon[] $result
      * @return string[]
      */
-    protected function toDatatime(array $result)
+    protected function toDateTime(array $result)
     {
         $dates = [];
         foreach ($result as $date) {
