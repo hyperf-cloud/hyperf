@@ -28,12 +28,6 @@ class ParserTest extends TestCase
     protected function setUp(): void
     {
         $this->timezone = 'Asia/Shanghai';
-        ini_set('date.timezone', $this->timezone);
-    }
-
-    protected function tearDown(): void
-    {
-        ini_set('date.timezone', $this->timezone);
     }
 
     public function testIsValid(): void
