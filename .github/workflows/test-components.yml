@@ -8,6 +8,38 @@ on:
 env:
   SW_VERSION: 'v5.1.2'
 jobs:
+  crontab:
+    name: Test for Crontab
+    runs-on: 'ubuntu-latest'
+    env:
+      PHP_VERSION: ${{ matrix.php-version }}
+    strategy:
+      matrix:
+        php-version: [ '8.3', '8.2', '8.1' ]
+        carbon-version: [ '^2.0', '^3.0' ]
+      max-parallel: 2
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: phpize
+          extensions: redis, pdo, pdo_mysql, bcmath, swoole
+          ini-values: opcache.enable_cli=1
+          coverage: none
+      - name: Setup Swoole
+        run: ./.travis/swoole.install.sh
+      - name: Setup Carbon ${{ matrix.carbon-version }}
+        run: composer require "nesbot/carbon:${{ matrix.carbon-version }}" --no-update
+      - name: Setup Packages
+        run: ./.travis/requirement.install.sh
+      - name: Run Test Cases
+        run: |
+          composer test src/crontab -- --exclude-group NonCoroutine
+          vendor/bin/phpunit src/crontab --group NonCoroutine
   database:
     name: Test for Database
     runs-on: 'ubuntu-latest'
@@ -260,7 +292,7 @@ jobs:
           composer remove bandwidth-throttle/token-bucket --dev -W
           composer remove friendsofphp/php-cs-fixer --dev -W
           composer remove zircote/swagger-php --dev -W
-          composer remove "symfony/*" --dev -W
+          composer remove "symfony/*" --dev --no-update
       - name: Run Test Cases
         run: |
           ./.travis/requirement.install.sh
@@ -268,14 +300,14 @@ jobs:
           then
             composer require "monolog/monolog:^2.0"
           fi
-          composer require "psr/log:${{ matrix.log-version }}"
+          composer require "psr/log:${{ matrix.log-version }}" --no-update
           if [ ${{ matrix.log-version }} == '^3.0' ]
           then
-            composer require "symfony/console:^6.0" --dev -W
+            composer require "symfony/console:^6.0" --dev --no-update
           else
-            composer require "symfony/console:^5.0" --dev -W
+            composer require "symfony/console:^5.0" --dev --no-update
           fi
-          composer require symfony/event-dispatcher --dev -W
+          composer require symfony/event-dispatcher --dev --no-update
           composer update -oW
           composer analyse src/framework
           composer analyse src/server/src/Entry/Logger.php
