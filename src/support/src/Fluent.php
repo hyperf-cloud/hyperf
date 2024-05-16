@@ -146,11 +146,8 @@ class Fluent implements ArrayAccess, Arrayable, Jsonable, JsonSerializable
 
     /**
      * Convert the fluent instance to JSON.
-     *
-     * @param int $options
-     * @return string
      */
-    public function toJson($options = 0)
+    public function toJson(int $options = 0): string
     {
         return json_encode($this->jsonSerialize(), $options);
     }
