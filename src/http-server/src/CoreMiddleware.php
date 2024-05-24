@@ -19,6 +19,7 @@ use Hyperf\Context\Context;
 use Hyperf\Context\RequestContext;
 use Hyperf\Context\ResponseContext;
 use Hyperf\Contract\Arrayable;
+use Hyperf\Contract\Htmlable;
 use Hyperf\Contract\Jsonable;
 use Hyperf\Contract\NormalizerInterface;
 use Hyperf\Di\ClosureDefinitionCollectorInterface;
@@ -186,7 +187,7 @@ class CoreMiddleware implements CoreMiddlewareInterface
     /**
      * Transfer the non-standard response content to a standard response object.
      *
-     * @param null|array|Arrayable|Jsonable|ResponseInterface|string $response
+     * @param null|array|Arrayable｜Htmlable|Jsonable|ResponseInterface|string $response
      */
     protected function transferToResponse($response, ServerRequestInterface $request): ResponsePlusInterface
     {
@@ -207,6 +208,12 @@ class CoreMiddleware implements CoreMiddlewareInterface
         if ($response instanceof Jsonable) {
             return $this->response()
                 ->addHeader('content-type', 'application/json')
+                ->setBody(new SwooleStream((string) $response));
+        }
+
+        if ($response instanceof Htmlable) {
+            return $this->response()
+                ->addHeader('content-type', 'text/html')
                 ->setBody(new SwooleStream((string) $response));
         }
 

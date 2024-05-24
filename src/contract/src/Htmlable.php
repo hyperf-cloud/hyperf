@@ -10,8 +10,16 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace Hyperf\ViewEngine\Contract;
+namespace Hyperf\Contract;
 
-interface Htmlable extends \Hyperf\Contract\Htmlable
+use Stringable;
+
+interface Htmlable extends Stringable
 {
+    /**
+     * Get content as a string of HTML.
+     *
+     * @return string
+     */
+    public function toHtml();
 }
