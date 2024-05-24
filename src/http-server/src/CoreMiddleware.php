@@ -187,7 +187,7 @@ class CoreMiddleware implements CoreMiddlewareInterface
     /**
      * Transfer the non-standard response content to a standard response object.
      *
-     * @param null|array|Arrayable｜Htmlable|Jsonable|ResponseInterface|string $response
+     * @param null|array|Arrayable|Htmlable|Jsonable|ResponseInterface|string $response
      */
     protected function transferToResponse($response, ServerRequestInterface $request): ResponsePlusInterface
     {
