@@ -18,6 +18,10 @@
 
 - [#6455](https://github.com/hyperf/hyperf/pull/6455) Optimized code of Hyperf\SocketIOServer\Parser\Decoder::decode().
 
+## Optimized
+
+- [#6218](https://github.com/hyperf/hyperf/pull/6218) Optimized code for `Hyperf\Codec\Exception\InvalidArgumentException` which you can be used to get the origin data.
+
 # v3.0.46 - 2023-11-30
 
 ## Fixed
