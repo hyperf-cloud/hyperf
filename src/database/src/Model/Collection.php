@@ -89,7 +89,7 @@ class Collection extends BaseCollection implements CompressInterface
      *
      * @param array<array-key, (callable(\Hyperf\Database\Model\Builder): mixed)|string>|string $relations
      */
-    public function loadAggregate(array|string $relations, string $column, ?string $function = null)
+    public function loadAggregate(array|string $relations, string $column, ?string $function = null): static
     {
         if ($this->isEmpty()) {
             return $this;
@@ -123,7 +123,7 @@ class Collection extends BaseCollection implements CompressInterface
      *
      * @param array<array-key, (callable(\Hyperf\Database\Model\Builder): mixed)|string>|string $relations
      */
-    public function loadMax(array $relations, string $column)
+    public function loadMax(array $relations, string $column): static
     {
         return $this->loadAggregate($relations, $column, 'max');
     }
@@ -133,7 +133,7 @@ class Collection extends BaseCollection implements CompressInterface
      *
      * @param array<array-key, (callable(\Hyperf\Database\Model\Builder): mixed)|string>|string $relations
      */
-    public function loadMin(array $relations, string $column)
+    public function loadMin(array $relations, string $column): static
     {
         return $this->loadAggregate($relations, $column, 'min');
     }
@@ -143,7 +143,7 @@ class Collection extends BaseCollection implements CompressInterface
      *
      * @param array<array-key, (callable(\Hyperf\Database\Model\Builder): mixed)|string>|string $relations
      */
-    public function loadSum(array|string $relations, string $column)
+    public function loadSum(array|string $relations, string $column): static
     {
         return $this->loadAggregate($relations, $column, 'sum');
     }
@@ -153,7 +153,7 @@ class Collection extends BaseCollection implements CompressInterface
      *
      * @param array<array-key, (callable(\Hyperf\Database\Model\Builder): mixed)|string>|string $relations
      */
-    public function loadAvg(array|string $relations, string $column)
+    public function loadAvg(array|string $relations, string $column): static
     {
         return $this->loadAggregate($relations, $column, 'avg');
     }
@@ -164,7 +164,7 @@ class Collection extends BaseCollection implements CompressInterface
      * @param array<array-key, (callable(\Hyperf\Database\Model\Builder): mixed)|string>|string $relations
      * @return $this
      */
-    public function loadCount($relations)
+    public function loadCount($relations): static
     {
         if ($this->isEmpty()) {
             return $this;
@@ -562,7 +562,7 @@ class Collection extends BaseCollection implements CompressInterface
      * @param array<array-key, string>|string $value
      * @return BaseCollection<int, mixed>
      */
-    public function pluck(array|string $value, ?string $key = null): BaseCollection
+    public function pluck(array|string $value, ?string $key = null)
     {
         return $this->toBase()->pluck($value, $key);
     }
@@ -572,7 +572,7 @@ class Collection extends BaseCollection implements CompressInterface
      *
      * @return BaseCollection<int, TKey>
      */
-    public function keys(): BaseCollection
+    public function keys()
     {
         return $this->toBase()->keys();
     }
@@ -585,7 +585,7 @@ class Collection extends BaseCollection implements CompressInterface
      * @param Arrayable<array-key, TZipValue>|iterable<array-key, TZipValue> ...$items
      * @return BaseCollection<int, BaseCollection<int, TModel|TZipValue>>
      */
-    public function zip($items): BaseCollection
+    public function zip($items)
     {
         return call_user_func_array([$this->toBase(), 'zip'], func_get_args());
     }
@@ -595,7 +595,7 @@ class Collection extends BaseCollection implements CompressInterface
      *
      * @return BaseCollection<int, mixed>
      */
-    public function collapse(): BaseCollection
+    public function collapse()
     {
         return $this->toBase()->collapse();
     }
@@ -606,7 +606,7 @@ class Collection extends BaseCollection implements CompressInterface
      * @param int $depth
      * @return BaseCollection<int, mixed>
      */
-    public function flatten($depth = INF): BaseCollection
+    public function flatten($depth = INF)
     {
         return $this->toBase()->flatten($depth);
     }
@@ -616,7 +616,7 @@ class Collection extends BaseCollection implements CompressInterface
      *
      * @return BaseCollection<TModel, TKey>
      */
-    public function flip(): BaseCollection
+    public function flip()
     {
         return $this->toBase()->flip();
     }
@@ -629,7 +629,7 @@ class Collection extends BaseCollection implements CompressInterface
      * @param TPadValue $value
      * @return BaseCollection<int, TModel|TPadValue>
      */
-    public function pad(int $size, $value): BaseCollection
+    public function pad(int $size, $value)
     {
         return $this->toBase()->pad($size, $value);
     }
