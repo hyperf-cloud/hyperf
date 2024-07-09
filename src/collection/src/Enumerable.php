@@ -56,7 +56,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param null|Arrayable<TMakeKey, TMakeValue>|iterable<TMakeKey, TMakeValue> $items
      * @return static<TMakeKey, TMakeValue>
-     * @return static
      */
     public static function make(mixed $items = []);
 
@@ -79,7 +78,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param iterable<array-key, TWrapValue>|TWrapValue $value
      * @return static<array-key, TWrapValue>
-     * @return static
      */
     public static function wrap(mixed $value);
 
@@ -467,7 +465,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param array<array-key, class-string<TWhereInstanceOf>>|class-string<TWhereInstanceOf> $type
      * @return static<TKey, TWhereInstanceOf>
-     * @return static
      */
     public function whereInstanceOf(array|string $type);
 
@@ -500,7 +497,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * Flip the values with their keys.
      *
      * @return static<TValue, TKey>
-     * @return static
      */
     public function flip();
 
@@ -520,7 +516,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param array|(callable(TValue, TKey): array-key)|string $groupBy
      * @return static<array-key, static<array-key, TValue>>
-     * @return static
      */
     public function groupBy($groupBy, bool $preserveKeys = false);
 
@@ -648,7 +643,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param callable(TValue, TKey): TMapValue $callback
      * @return static<TKey, TMapValue>
-     * @return static
      */
     public function map(callable $callback);
 
@@ -668,7 +662,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param callable(TValue, TKey): array<TMapToDictionaryKey, TMapToDictionaryValue> $callback
      * @return static<TMapToDictionaryKey, array<int, TMapToDictionaryValue>>
-     * @return static
      */
     public function mapToDictionary(callable $callback);
 
@@ -682,7 +675,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param callable(TValue, TKey): array<TMapToGroupsKey, TMapToGroupsValue> $callback
      * @return static<TMapToGroupsKey, static<int, TMapToGroupsValue>>
-     * @return static
      */
     public function mapToGroups(callable $callback);
 
@@ -696,7 +688,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param callable(TValue, TKey): array<TMapWithKeysKey, TMapWithKeysValue> $callback
      * @return static<TMapWithKeysKey, TMapWithKeysValue>
-     * @return static
      */
     public function mapWithKeys(callable $callback);
 
@@ -708,7 +699,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param callable(TValue, TKey): (array<TFlatMapKey, TFlatMapValue>|Collection<TFlatMapKey, TFlatMapValue>) $callback
      * @return static<TFlatMapKey, TFlatMapValue>
-     * @return static
      */
     public function flatMap(callable $callback);
 
@@ -719,7 +709,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param class-string<TMapIntoValue> $class
      * @return static<TKey, TMapIntoValue>
-     * @return static
      */
     public function mapInto(mixed $class);
 
@@ -798,7 +787,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param (callable(TValue, TKey): bool)|string|TValue $key
      * @return static<int<0, 1>, static<TKey, TValue>>
-     * @return static
      */
     public function partition(mixed $key, mixed $operator = null, mixed $value = null);
 
@@ -902,7 +890,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * Create chunks representing a "sliding window" view of the items in the collection.
      *
      * @return static<int, static>
-     * @return static
      */
     public function sliding(int $size = 2, int $step = 1);
 
@@ -1074,7 +1061,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param callable(TValue): mixed $callback
      * @return $this
-     * @return static
      */
     public function tap(callable $callback);
 
@@ -1111,7 +1097,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param array<array-key, string>|string $value
      * @return static<int, mixed>
-     * @return static
      */
     public function pluck(array|string $value, ?string $key = null);
 
@@ -1159,7 +1144,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param TPadValue $value
      * @return static<int, TPadValue|TValue>
-     * @return static
      */
     public function pad(int $size, $value);
 
@@ -1193,7 +1177,6 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param Arrayable<array-key, TZipValue>|iterable<array-key, TZipValue> ...$items
      * @return static<int, static<int, TValue|TZipValue>>
-     * @return static
      */
     public function zip($items);
 
