@@ -413,6 +413,7 @@ class LazyCollection implements Enumerable
      * Get all items except for those with the specified keys.
      *
      * @param array<array-key, TKey>|Enumerable<array-key, TKey> $keys
+     * @return static
      */
     public function except($keys)
     {
