@@ -57,17 +57,17 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param null|Arrayable<TMakeKey, TMakeValue>|iterable<TMakeKey, TMakeValue> $items
      * @return static<TMakeKey, TMakeValue>
      */
-    public static function make(mixed $items = []): static;
+    public static function make(mixed $items = []): Enumerable;
 
     /**
      * Create a new instance by invoking the callback a given amount of times.
      */
-    public static function times(int $number, ?callable $callback = null): static;
+    public static function times(int $number, ?callable $callback = null): Enumerable;
 
     /**
      * Create a collection with the given range.
      */
-    public static function range(float|int|string $from, float|int|string $to): static;
+    public static function range(float|int|string $from, float|int|string $to): Enumerable;
 
     /**
      * Wrap the given value in a collection if applicable.
@@ -77,7 +77,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param iterable<array-key, TWrapValue>|TWrapValue $value
      * @return static<array-key, TWrapValue>
      */
-    public static function wrap(mixed $value): static;
+    public static function wrap(mixed $value): Enumerable;
 
     /**
      * Get the underlying items from the given collection if applicable.
@@ -93,7 +93,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
     /**
      * Create a new instance with no items.
      */
-    public static function empty(): static;
+    public static function empty(): Enumerable;
 
     /**
      * Get all items in the enumerable.
@@ -128,7 +128,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @return static<int, mixed>
      */
-    public function collapse(): static;
+    public function collapse(): Enumerable;
 
     /**
      * Alias for the "contains" method.
@@ -208,7 +208,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param Arrayable<array-key, TValue>|iterable<array-key, TValue> $items
      */
-    public function diff($items): static;
+    public function diff($items): Enumerable;
 
     /**
      * Get the items that are not present in the given items, using the callback.
@@ -275,12 +275,12 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param callable(TValue, TKey): mixed $callback
      */
-    public function each(callable $callback): static;
+    public function each(callable $callback): Enumerable;
 
     /**
      * Execute a callback over each nested chunk of items.
      */
-    public function eachSpread(callable $callback): static;
+    public function eachSpread(callable $callback): Enumerable;
 
     /**
      * Determine if all items pass the given truth test.
@@ -294,7 +294,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param array<array-key, TKey>|Enumerable<array-key, TKey> $keys
      */
-    public function except($keys): static;
+    public function except($keys): Enumerable;
 
     /**
      * Run a filter over each of the items.
@@ -375,7 +375,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
     /**
      * Filter items by the given key value pair.
      */
-    public function where(callable|string $key, mixed $operator = null, mixed $value = null): static;
+    public function where(callable|string $key, mixed $operator = null, mixed $value = null): Enumerable;
 
     /**
      * Filter items where the value for the given key is null.
@@ -396,21 +396,21 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
     /**
      * Filter items by the given key value pair using strict comparison.
      */
-    public function whereStrict(string $key, mixed $value): static;
+    public function whereStrict(string $key, mixed $value): Enumerable;
 
     /**
      * Filter items by the given key value pair.
      *
      * @param Arrayable|iterable $values
      */
-    public function whereIn(string $key, mixed $values, bool $strict = false): static;
+    public function whereIn(string $key, mixed $values, bool $strict = false): Enumerable;
 
     /**
      * Filter items by the given key value pair using strict comparison.
      *
      * @param Arrayable|iterable $values
      */
-    public function whereInStrict(string $key, mixed $values): static;
+    public function whereInStrict(string $key, mixed $values): Enumerable;
 
     /**
      * Filter items such that the value of the given key is between the given values.
@@ -435,14 +435,14 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param Arrayable|iterable $values
      */
-    public function whereNotIn(string $key, mixed $values, bool $strict = false): static;
+    public function whereNotIn(string $key, mixed $values, bool $strict = false): Enumerable;
 
     /**
      * Filter items by the given key value pair using strict comparison.
      *
      * @param Arrayable|iterable $values
      */
-    public function whereNotInStrict(string $key, mixed $values): static;
+    public function whereNotInStrict(string $key, mixed $values): Enumerable;
 
     /**
      * Filter the items, removing any items that don't match the given type(s).
@@ -452,7 +452,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param array<array-key, class-string<TWhereInstanceOf>>|class-string<TWhereInstanceOf> $type
      * @return static<TKey, TWhereInstanceOf>
      */
-    public function whereInstanceOf(array|string $type): static;
+    public function whereInstanceOf(array|string $type): Enumerable;
 
     /**
      * Get the first item from the enumerable passing the given truth test.
@@ -476,14 +476,14 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
     /**
      * Get a flattened array of the items in the collection.
      */
-    public function flatten(float|int $depth = INF): static;
+    public function flatten(float|int $depth = INF): Enumerable;
 
     /**
      * Flip the values with their keys.
      *
      * @return static<TValue, TKey>
      */
-    public function flip(): static;
+    public function flip(): Enumerable;
 
     /**
      * Get an item from the collection by key.
@@ -502,7 +502,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param array|(callable(TValue, TKey): array-key)|string $groupBy
      * @return static<array-key, static<array-key, TValue>>
      */
-    public function groupBy($groupBy, bool $preserveKeys = false): static;
+    public function groupBy($groupBy, bool $preserveKeys = false): Enumerable;
 
     /**
      * Key an associative array by a field or using a callback.
@@ -538,7 +538,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param Arrayable<TKey, TValue>|iterable<TKey, TValue> $items
      */
-    public function intersect(mixed $items): static;
+    public function intersect(mixed $items): Enumerable;
 
     /**
      * Intersect the collection with the given items, using the callback.
@@ -628,12 +628,12 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param callable(TValue, TKey): TMapValue $callback
      * @return static<TKey, TMapValue>
      */
-    public function map(callable $callback): static;
+    public function map(callable $callback): Enumerable;
 
     /**
      * Run a map over each nested chunk of items.
      */
-    public function mapSpread(callable $callback): static;
+    public function mapSpread(callable $callback): Enumerable;
 
     /**
      * Run a dictionary map over the items.
@@ -646,7 +646,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param callable(TValue, TKey): array<TMapToDictionaryKey, TMapToDictionaryValue> $callback
      * @return static<TMapToDictionaryKey, array<int, TMapToDictionaryValue>>
      */
-    public function mapToDictionary(callable $callback): static;
+    public function mapToDictionary(callable $callback): Enumerable;
 
     /**
      * Run a grouping map over the items.
@@ -659,7 +659,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param callable(TValue, TKey): array<TMapToGroupsKey, TMapToGroupsValue> $callback
      * @return static<TMapToGroupsKey, static<int, TMapToGroupsValue>>
      */
-    public function mapToGroups(callable $callback): static;
+    public function mapToGroups(callable $callback): Enumerable;
 
     /**
      * Run an associative map over each of the items.
@@ -672,7 +672,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param callable(TValue, TKey): array<TMapWithKeysKey, TMapWithKeysValue> $callback
      * @return static<TMapWithKeysKey, TMapWithKeysValue>
      */
-    public function mapWithKeys(callable $callback): static;
+    public function mapWithKeys(callable $callback): Enumerable;
 
     /**
      * Map a collection and flatten the result by a single level.
@@ -683,7 +683,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param callable(TValue, TKey): (array<TFlatMapKey, TFlatMapValue>|Collection<TFlatMapKey, TFlatMapValue>) $callback
      * @return static<TFlatMapKey, TFlatMapValue>
      */
-    public function flatMap(callable $callback): static;
+    public function flatMap(callable $callback): Enumerable;
 
     /**
      * Map the values into a new class.
@@ -693,7 +693,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param class-string<TMapIntoValue> $class
      * @return static<TKey, TMapIntoValue>
      */
-    public function mapInto(mixed $class): static;
+    public function mapInto(mixed $class): Enumerable;
 
     /**
      * Merge the collection with the given items.
@@ -748,19 +748,19 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
     /**
      * Create a new collection consisting of every n-th element.
      */
-    public function nth(int $step, int $offset = 0): static;
+    public function nth(int $step, int $offset = 0): Enumerable;
 
     /**
      * Get the items with the specified keys.
      *
      * @param null|array<array-key, TKey>|Enumerable<array-key, TKey>|string $keys
      */
-    public function only($keys): static;
+    public function only($keys): Enumerable;
 
     /**
      * "Paginate" the collection by slicing it into a smaller collection.
      */
-    public function forPage(int $page, int $perPage): static;
+    public function forPage(int $page, int $perPage): Enumerable;
 
     /**
      * Partition the collection into two arrays using the given callback or key.
@@ -768,7 +768,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param (callable(TValue, TKey): bool)|string|TValue $key
      * @return static<int<0, 1>, static<TKey, TValue>>
      */
-    public function partition(mixed $key, mixed $operator = null, mixed $value = null): static;
+    public function partition(mixed $key, mixed $operator = null, mixed $value = null): Enumerable;
 
     /**
      * Push all of the given items onto the collection.
@@ -871,12 +871,12 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @return static<int, static>
      */
-    public function sliding(int $size = 2, int $step = 1): static;
+    public function sliding(int $size = 2, int $step = 1): Enumerable;
 
     /**
      * Skip the first {$count} items.
      */
-    public function skip(int $count): static;
+    public function skip(int $count): Enumerable;
 
     /**
      * Skip items in the collection until the given condition is met.
@@ -897,14 +897,14 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
     /**
      * Get a slice of items from the enumerable.
      */
-    public function slice(int $offset, ?int $length = null): static;
+    public function slice(int $offset, ?int $length = null): Enumerable;
 
     /**
      * Split a collection into a certain number of groups.
      *
      * @return static<int, static>
      */
-    public function split(int $numberOfGroups): static;
+    public function split(int $numberOfGroups): Enumerable;
 
     /**
      * Get the first item in the collection, but only if exactly one item exists. Otherwise, throw an exception.
@@ -935,7 +935,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @return static<int, static>
      */
-    public function chunk(int $size): static;
+    public function chunk(int $size): Enumerable;
 
     /**
      * Chunk the collection into chunks with a callback.
@@ -957,43 +957,43 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      *
      * @param null|(callable(TValue, TValue): int) $callback
      */
-    public function sort(?callable $callback = null): static;
+    public function sort(?callable $callback = null): Enumerable;
 
     /**
      * Sort items in descending order.
      */
-    public function sortDesc(int $options = SORT_REGULAR): static;
+    public function sortDesc(int $options = SORT_REGULAR): Enumerable;
 
     /**
      * Sort the collection using the given callback.
      *
      * @param array<array-key, array{string, string}|(callable(TValue, TKey): mixed)|(callable(TValue, TValue): mixed)|string>|(callable(TValue, TKey): mixed)|string $callback
      */
-    public function sortBy($callback, int $options = SORT_REGULAR, bool $descending = false): static;
+    public function sortBy($callback, int $options = SORT_REGULAR, bool $descending = false): Enumerable;
 
     /**
      * Sort the collection in descending order using the given callback.
      *
      * @param array<array-key, array{string, string}|(callable(TValue, TKey): mixed)|(callable(TValue, TValue): mixed)|string>|(callable(TValue, TKey): mixed)|string $callback
      */
-    public function sortByDesc($callback, int $options = SORT_REGULAR): static;
+    public function sortByDesc($callback, int $options = SORT_REGULAR): Enumerable;
 
     /**
      * Sort the collection keys.
      */
-    public function sortKeys(int $options = SORT_REGULAR, bool $descending = false): static;
+    public function sortKeys(int $options = SORT_REGULAR, bool $descending = false): Enumerable;
 
     /**
      * Sort the collection keys in descending order.
      */
-    public function sortKeysDesc(int $options = SORT_REGULAR): static;
+    public function sortKeysDesc(int $options = SORT_REGULAR): Enumerable;
 
     /**
      * Sort the collection keys using a callback.
      *
      * @param callable(TKey, TKey): int $callback
      */
-    public function sortKeysUsing(callable $callback): static;
+    public function sortKeysUsing(callable $callback): Enumerable;
 
     /**
      * Get the sum of the given values.
@@ -1006,7 +1006,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
     /**
      * Take the first or last {$limit} items.
      */
-    public function take(int $limit): static;
+    public function take(int $limit): Enumerable;
 
     /**
      * Take items in the collection until the given condition is met.
@@ -1030,7 +1030,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param callable(TValue): mixed $callback
      * @return $this
      */
-    public function tap(callable $callback): static;
+    public function tap(callable $callback): Enumerable;
 
     /**
      * Pass the enumerable to the given callback and return the result.
@@ -1066,33 +1066,33 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param array<array-key, string>|string $value
      * @return static<int, mixed>
      */
-    public function pluck(array|string $value, ?string $key = null): static;
+    public function pluck(array|string $value, ?string $key = null): Enumerable;
 
     /**
      * Create a collection of all elements that do not pass a given truth test.
      *
      * @param bool|(callable(TValue, TKey): bool)|TValue $callback
      */
-    public function reject(mixed $callback = true): static;
+    public function reject(mixed $callback = true): Enumerable;
 
     /**
      * Convert a flatten "dot" notation array into an expanded array.
      */
-    public function undot(): static;
+    public function undot(): Enumerable;
 
     /**
      * Return only unique items from the collection array.
      *
      * @param null|(callable(TValue, TKey): mixed)|string $key
      */
-    public function unique(mixed $key = null, bool $strict = false): static;
+    public function unique(mixed $key = null, bool $strict = false): Enumerable;
 
     /**
      * Return only unique items from the collection array using strict comparison.
      *
      * @param null|(callable(TValue, TKey): mixed)|string $key
      */
-    public function uniqueStrict(mixed $key = null): static;
+    public function uniqueStrict(mixed $key = null): Enumerable;
 
     /**
      * Reset the keys on the underlying array.
@@ -1109,7 +1109,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param TPadValue $value
      * @return static<int, TPadValue|TValue>
      */
-    public function pad(int $size, $value): static;
+    public function pad(int $size, $value): Enumerable;
 
     /**
      * Get the values iterator.
@@ -1142,7 +1142,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param Arrayable<array-key, TZipValue>|iterable<array-key, TZipValue> ...$items
      * @return static<int, static<int, TValue|TZipValue>>
      */
-    public function zip($items): static;
+    public function zip($items): Enumerable;
 
     /**
      * Collect the values into a collection.
