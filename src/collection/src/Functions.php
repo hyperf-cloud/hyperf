@@ -23,7 +23,7 @@ use Closure;
  * @param null|\Hyperf\Contract\Arrayable<TKey, TValue>|iterable<TKey, TValue> $value
  * @return Collection<TKey, TValue>
  */
-function collect($value = [])
+function collect($value = []): Collection
 {
     return new Collection($value);
 }
