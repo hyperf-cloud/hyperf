@@ -1232,10 +1232,10 @@ class CollectionTest extends TestCase
             ]
         ))->sortBy('name', SORT_LOCALE_STRING);
         $this->assertEquals(json_encode([
-            1 => ['id' => 4, 'name' => 'a'],
             0 => ['id' => 5, 'name' => 'A'],
-            3 => ['id' => 2, 'name' => 'b'],
             2 => ['id' => 3, 'name' => 'B'],
+            1 => ['id' => 4, 'name' => 'a'],
+            3 => ['id' => 2, 'name' => 'b'],
             4 => ['id' => 1, 'name' => 'c'],
         ]), (string) $data);
         $dataMany = (new $collection(
