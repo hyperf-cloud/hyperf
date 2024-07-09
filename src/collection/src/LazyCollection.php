@@ -1197,7 +1197,7 @@ class LazyCollection implements Enumerable
     /**
      * Skip items in the collection until the given condition is met.
      *
-     * @param callable(TValue,TKey): bool|TValue $value
+     * @param Closure(TValue,TKey): bool|TValue $value
      * @return static
      */
     public function skipUntil($value)

@@ -1119,7 +1119,7 @@ trait EnumeratesValues
     /**
      * Make a function using another function, by negating its result.
      *
-     * @return Closure
+     * @return Closure(TValue,TKey): bool|TValue
      */
     protected function negate(Closure $callback)
     {
