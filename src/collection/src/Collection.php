@@ -155,7 +155,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<int, mixed>
      */
-    public function collapse(): Collection
+    public function collapse()
     {
         return new static(Arr::collapse($this->items));
     }
@@ -209,7 +209,7 @@ class Collection implements Enumerable, ArrayAccess
     /**
      * Cross join with the given lists, returning all possible permutations.
      */
-    public function crossJoin(...$lists): Collection
+    public function crossJoin(...$lists)
     {
         return new static(Arr::crossJoin($this->items, ...array_map([$this, 'getArrayableItems'], $lists)));
     }
@@ -231,7 +231,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<TKey, TValue>
      */
-    public function dot(): Collection
+    public function dot()
     {
         return new static(Arr::dot($this->all()));
     }
@@ -239,7 +239,7 @@ class Collection implements Enumerable, ArrayAccess
     /**
      * Convert a flatten "dot" notation array into an expanded array.
      */
-    public function undot(): Collection
+    public function undot()
     {
         return new static(Arr::undot($this->all()));
     }
@@ -250,7 +250,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param Arrayable<array-key, TValue>|iterable<array-key, TValue> $items
      * @return static<TKey, TValue>
      */
-    public function diff($items): Collection
+    public function diff($items)
     {
         return new static(array_diff($this->items, $this->getArrayableItems($items)));
     }
@@ -262,7 +262,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param callable(TValue): int $callback
      * @return static<TKey, TValue>
      */
-    public function diffUsing($items, callable $callback): Collection
+    public function diffUsing($items, callable $callback)
     {
         return new static(array_udiff($this->items, $this->getArrayableItems($items), $callback));
     }
@@ -273,7 +273,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param Arrayable<TKey, TValue>|iterable<TKey, TValue> $items
      * @return static<TKey, TValue>
      */
-    public function diffAssoc($items): Collection
+    public function diffAssoc($items)
     {
         return new static(array_diff_assoc($this->items, $this->getArrayableItems($items)));
     }
@@ -285,7 +285,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param callable(TKey): int $callback
      * @return static<TKey, TValue>
      */
-    public function diffAssocUsing($items, callable $callback): Collection
+    public function diffAssocUsing($items, callable $callback)
     {
         return new static(array_diff_uassoc($this->items, $this->getArrayableItems($items), $callback));
     }
@@ -296,7 +296,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param Arrayable<TKey, TValue>|iterable<TKey, TValue> $items
      * @return static<TKey, TValue>
      */
-    public function diffKeys($items): Collection
+    public function diffKeys($items)
     {
         return new static(array_diff_key($this->items, $this->getArrayableItems($items)));
     }
@@ -308,7 +308,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param callable(TKey): int $callback
      * @return static<TKey, TValue>
      */
-    public function diffKeysUsing($items, callable $callback): Collection
+    public function diffKeysUsing($items, callable $callback)
     {
         return new static(array_diff_ukey($this->items, $this->getArrayableItems($items), $callback));
     }
@@ -319,7 +319,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param null|array<array-key, TKey>|static<array-key, TKey> $keys
      * @return static<TKey, TValue>
      */
-    public function except($keys): Collection
+    public function except($keys)
     {
         if (is_null($keys)) {
             return new static($this->items);
@@ -338,7 +338,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param null|(callable(TValue, TKey): bool) $callback
      * @return static<TKey, TValue>
      */
-    public function filter(?callable $callback = null): Collection
+    public function filter(?callable $callback = null)
     {
         if ($callback) {
             return new static(Arr::where($this->items, $callback));
@@ -376,7 +376,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param float|int $depth
      * @return static<int, mixed>
      */
-    public function flatten($depth = INF): Collection
+    public function flatten($depth = INF)
     {
         return new static(Arr::flatten($this->items, $depth));
     }
@@ -386,7 +386,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<TKey, TValue>
      */
-    public function flip(): Collection
+    public function flip()
     {
         return new static(array_flip($this->items));
     }
@@ -397,7 +397,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param Arrayable<array-key, TValue>|iterable<array-key, TKey>|TKey $keys
      * @return $this
      */
-    public function forget($keys): Collection
+    public function forget($keys)
     {
         foreach ($this->getArrayableItems($keys) as $key) {
             $this->offsetUnset($key);
@@ -458,7 +458,7 @@ class Collection implements Enumerable, ArrayAccess
      * Group an associative array by a field or using a callback.
      * @param mixed $groupBy
      */
-    public function groupBy($groupBy, bool $preserveKeys = false): Collection
+    public function groupBy($groupBy, bool $preserveKeys = false)
     {
         if (is_array($groupBy)) {
             $nextGroups = $groupBy;
@@ -492,7 +492,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param array|(callable(TValue, TKey): array-key)|string $keyBy
      * @return static<TKey, TValue>
      */
-    public function keyBy($keyBy): Collection
+    public function keyBy($keyBy)
     {
         $keyBy = $this->valueRetriever($keyBy);
         $results = [];
@@ -567,7 +567,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param Arrayable<TKey, TValue>|iterable<TKey, TValue> $items
      * @return static<TKey, TValue>
      */
-    public function intersect(mixed $items): Collection
+    public function intersect(mixed $items)
     {
         return new static(array_intersect($this->items, $this->getArrayableItems($items)));
     }
@@ -578,7 +578,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param Arrayable<TKey, TValue>|iterable<TKey, TValue> $items
      * @return static<TKey, TValue>
      */
-    public function intersectAssoc($items): Collection
+    public function intersectAssoc($items)
     {
         return new static(array_intersect_assoc($this->items, $this->getArrayableItems($items)));
     }
@@ -588,7 +588,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param Arrayable<TKey, TValue>|iterable<TKey, TValue> $items
      * @return static<TKey, TValue>
      */
-    public function intersectByKeys($items): Collection
+    public function intersectByKeys($items)
     {
         return new static(array_intersect_key($this->items, $this->getArrayableItems($items)));
     }
@@ -605,7 +605,7 @@ class Collection implements Enumerable, ArrayAccess
      * Get the keys of the collection items.
      * @return static<int, TKey>
      */
-    public function keys(): Collection
+    public function keys()
     {
         return new static(array_keys($this->items));
     }
@@ -630,7 +630,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param array<array-key, string>|string $value
      * @return static<int, mixed>
      */
-    public function pluck(array|string $value, ?string $key = null): Collection
+    public function pluck(array|string $value, ?string $key = null)
     {
         return new static(Arr::pluck($this->items, $value, $key));
     }
@@ -643,7 +643,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param callable(TValue, TKey): TMapValue $callback
      * @return static<TKey, TMapValue>
      */
-    public function map(callable $callback): Collection
+    public function map(callable $callback)
     {
         $result = [];
         foreach ($this->items as $key => $value) {
@@ -663,7 +663,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param callable(TValue, TKey): array<TMapToDictionaryKey, TMapToDictionaryValue> $callback
      * @return static<TMapToDictionaryKey, array<int, TMapToDictionaryValue>>
      */
-    public function mapToDictionary(callable $callback): Collection
+    public function mapToDictionary(callable $callback)
     {
         $dictionary = [];
         foreach ($this->items as $key => $item) {
@@ -688,7 +688,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param callable(TValue, TKey): array<TMapWithKeysKey, TMapWithKeysValue> $callback
      * @return static<TMapWithKeysKey, TMapWithKeysValue>
      */
-    public function mapWithKeys(callable $callback): Collection
+    public function mapWithKeys(callable $callback)
     {
         return new static(Arr::mapWithKeys($this->items, $callback));
     }
@@ -698,7 +698,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param Arrayable<TKey, TValue>|iterable<TKey, TValue> $items
      * @return static<TKey, TValue>
      */
-    public function merge($items): Collection
+    public function merge($items)
     {
         return new static(array_merge($this->items, $this->getArrayableItems($items)));
     }
@@ -709,7 +709,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param Arrayable<TKey, TValue>|iterable<TKey, TValue> $items
      * @return static<TKey, TValue>
      */
-    public function mergeRecursive($items): Collection
+    public function mergeRecursive($items)
     {
         return new static(array_merge_recursive($this->items, $this->getArrayableItems($items)));
     }
@@ -722,7 +722,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param Arrayable<array-key, TCombineValue>|iterable<array-key, TCombineValue> $values
      * @return static<TKey, TCombineValue>
      */
-    public function combine($values): Collection
+    public function combine($values)
     {
         return new static(array_combine($this->all(), $this->getArrayableItems($values)));
     }
@@ -733,7 +733,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param Arrayable<TKey, TValue>|iterable<TKey, TValue> $items
      * @return static<TKey, TValue>
      */
-    public function union($items): Collection
+    public function union($items)
     {
         return new static($this->items + $this->getArrayableItems($items));
     }
@@ -743,7 +743,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<TKey, TValue>
      */
-    public function nth(int $step, int $offset = 0): Collection
+    public function nth(int $step, int $offset = 0)
     {
         $new = [];
         $position = 0;
@@ -762,7 +762,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param null|array<array-key, TKey>|static<array-key, TKey>|string $keys
      * @return static<TKey, TValue>
      */
-    public function only($keys): Collection
+    public function only($keys)
     {
         if (is_null($keys)) {
             return new static($this->items);
@@ -789,7 +789,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param null|TKey $key
      * @return $this
      */
-    public function prepend($value, $key = null): Collection
+    public function prepend($value, $key = null)
     {
         $this->items = Arr::prepend($this->items, $value, $key);
         return $this;
@@ -801,7 +801,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param TValue $value
      * @return $this
      */
-    public function push($value): Collection
+    public function push($value)
     {
         $this->offsetSet(null, $value);
         return $this;
@@ -813,7 +813,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param iterable<array-key, TValue> $source
      * @return static<TKey, TValue>
      */
-    public function concat($source): Collection
+    public function concat($source)
     {
         $result = new static($this);
         foreach ($source as $item) {
@@ -843,7 +843,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param TValue $value
      * @return $this
      */
-    public function put($key, $value): Collection
+    public function put($key, $value)
     {
         $this->offsetSet($key, $value);
         return $this;
@@ -868,7 +868,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<int, int>
      */
-    public static function range(float|int|string $from, float|int|string $to): Collection
+    public static function range(float|int|string $from, float|int|string $to)
     {
         return new static(range($from, $to));
     }
@@ -900,7 +900,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<TKey, TValue>
      */
-    public function reverse(): Collection
+    public function reverse()
     {
         return new static(array_reverse($this->items, true));
     }
@@ -985,7 +985,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<TKey, TValue>
      */
-    public function shuffle(?int $seed = null): Collection
+    public function shuffle(?int $seed = null)
     {
         return new static(Arr::shuffle($this->items, $seed));
     }
@@ -995,7 +995,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<TKey, TValue>
      */
-    public function skip(int $count): Collection
+    public function skip(int $count)
     {
         return $this->slice($count);
     }
@@ -1005,7 +1005,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<TKey, TValue>
      */
-    public function slice(int $offset, ?int $length = null): Collection
+    public function slice(int $offset, ?int $length = null)
     {
         return new static(array_slice($this->items, $offset, $length, true));
     }
@@ -1015,7 +1015,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<int, TTimesValue>
      */
-    public function sliding(int $size = 2, int $step = 1): Collection
+    public function sliding(int $size = 2, int $step = 1)
     {
         $chunks = (int) floor(($this->count() - $size) / $step) + 1;
 
@@ -1027,7 +1027,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<int, static<TKey, TValue>>
      */
-    public function split(int $numberOfGroups): Collection
+    public function split(int $numberOfGroups)
     {
         if ($this->isEmpty()) {
             return new static();
@@ -1054,7 +1054,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<int, static<TKey, TValue>>
      */
-    public function chunk(int $size): Collection
+    public function chunk(int $size)
     {
         if ($size <= 0) {
             return new static();
@@ -1072,7 +1072,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param callable(TValue, TValue): int $callback
      * @return static<TKey, TValue>
      */
-    public function sort(?callable $callback = null): Collection
+    public function sort(?callable $callback = null)
     {
         $items = $this->items;
         $callback ? uasort($items, $callback) : asort($items);
@@ -1085,7 +1085,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param array|(callable(TValue, TKey): mixed)|string $callback
      * @return static<TKey, TValue>
      */
-    public function sortBy($callback, int $options = SORT_REGULAR, bool $descending = false): Collection
+    public function sortBy($callback, int $options = SORT_REGULAR, bool $descending = false)
     {
         if (is_array($callback) && ! is_callable($callback)) {
             return $this->sortByMany($callback, $options);
@@ -1115,7 +1115,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param array|(callable(TValue, TKey): mixed)|string $callback
      * @return static<TKey, TValue>
      */
-    public function sortByDesc($callback, int $options = SORT_REGULAR): Collection
+    public function sortByDesc($callback, int $options = SORT_REGULAR)
     {
         if (is_array($callback) && ! is_callable($callback)) {
             foreach ($callback as $index => $key) {
@@ -1135,7 +1135,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<TKey, TValue>
      */
-    public function sortDesc(int $options = SORT_REGULAR): Collection
+    public function sortDesc(int $options = SORT_REGULAR)
     {
         $items = $this->items;
 
@@ -1149,7 +1149,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<TKey, TValue>
      */
-    public function sortKeys(int $options = SORT_REGULAR, bool $descending = false): Collection
+    public function sortKeys(int $options = SORT_REGULAR, bool $descending = false)
     {
         $items = $this->items;
         $descending ? krsort($items, $options) : ksort($items, $options);
@@ -1161,7 +1161,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<TKey, TValue>
      */
-    public function sortKeysDesc(int $options = SORT_REGULAR): Collection
+    public function sortKeysDesc(int $options = SORT_REGULAR)
     {
         return $this->sortKeys($options, true);
     }
@@ -1172,7 +1172,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param callable(TKey, TKey): int $callback
      * @return static<TKey, TValue>
      */
-    public function sortKeysUsing(callable $callback): Collection
+    public function sortKeysUsing(callable $callback)
     {
         $items = $this->items;
 
@@ -1187,7 +1187,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param array<array-key, TValue> $replacement
      * @return static<TKey, TValue>
      */
-    public function splice(int $offset, ?int $length = null, $replacement = []): Collection
+    public function splice(int $offset, ?int $length = null, $replacement = [])
     {
         if (func_num_args() === 1) {
             return new static(array_splice($this->items, $offset));
@@ -1210,7 +1210,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<TKey, TValue>
      */
-    public function take(int $limit): Collection
+    public function take(int $limit)
     {
         if ($limit < 0) {
             return $this->slice($limit, abs($limit));
@@ -1224,7 +1224,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param callable(TValue, TKey): TValue $callback
      * @return $this
      */
-    public function transform(callable $callback): Collection
+    public function transform(callable $callback)
     {
         $this->items = $this->map($callback)->all();
         return $this;
@@ -1248,7 +1248,7 @@ class Collection implements Enumerable, ArrayAccess
      *
      * @return static<TKey, TValue>
      */
-    public function values(): Collection
+    public function values()
     {
         return new static(array_values($this->items));
     }
@@ -1263,7 +1263,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param Arrayable<array-key, TZipValue>|iterable<array-key, TZipValue> ...$items
      * @return static<int, static<int, TValue|TZipValue>>
      */
-    public function zip($items): Collection
+    public function zip($items)
     {
         $arrayableItems = array_map(function ($items) {
             return $this->getArrayableItems($items);
@@ -1285,7 +1285,7 @@ class Collection implements Enumerable, ArrayAccess
      * @param TPadValue $value
      * @return static<int, TPadValue|TValue>
      */
-    public function pad(int $size, $value): Collection
+    public function pad(int $size, $value)
     {
         return new static(array_pad($this->items, $size, $value));
     }

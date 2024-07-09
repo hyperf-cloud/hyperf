@@ -924,7 +924,7 @@ trait EnumeratesValues
      *
      * @return Collection<TKey, TValue>
      */
-    public function collect(): Collection
+    public function collect()
     {
         return new Collection($this->all());
     }
