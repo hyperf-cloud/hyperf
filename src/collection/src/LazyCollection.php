@@ -322,6 +322,7 @@ class LazyCollection implements Enumerable
      * Get the items that are not present in the given items.
      *
      * @param Arrayable<array-key, TValue>|iterable<array-key, TValue> $items
+     * @return static
      */
     public function diff($items)
     {
