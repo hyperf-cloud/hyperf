@@ -425,6 +425,7 @@ class LazyCollection implements Enumerable
      * Run a filter over each of the items.
      *
      * @param null|(callable(TValue, TKey): bool) $callback
+     * @return static
      */
     public function filter(?callable $callback = null)
     {
@@ -615,6 +616,7 @@ class LazyCollection implements Enumerable
      * Intersect the collection with the given items.
      *
      * @param Arrayable<TKey, TValue>|iterable<TKey, TValue> $items
+     * @return static
      */
     public function intersect(mixed $items)
     {
@@ -883,6 +885,7 @@ class LazyCollection implements Enumerable
 
     /**
      * Create a new collection consisting of every n-th element.
+     * @return static
      */
     public function nth(int $step, int $offset = 0)
     {
@@ -903,6 +906,7 @@ class LazyCollection implements Enumerable
      * Get the items with the specified keys.
      *
      * @param null|array<array-key, TKey>|Enumerable<array-key, TKey>|string $keys
+     * @return static
      */
     public function only($keys)
     {
@@ -1132,7 +1136,7 @@ class LazyCollection implements Enumerable
     /**
      * Shuffle the items in the collection.
      *
-     * @return Collection
+     * @return static
      */
     public function shuffle(?int $seed = null)
     {
@@ -1178,6 +1182,7 @@ class LazyCollection implements Enumerable
 
     /**
      * Skip the first {$count} items.
+     * @return static
      */
     public function skip(int $count)
     {
@@ -1236,6 +1241,7 @@ class LazyCollection implements Enumerable
 
     /**
      * Get a slice of items from the enumerable.
+     * @return static
      */
     public function slice(int $offset, ?int $length = null)
     {
@@ -1396,6 +1402,7 @@ class LazyCollection implements Enumerable
      * Sort through each item with a callback.
      *
      * @param null|(callable(TValue, TValue): int) $callback
+     * @return static
      */
     public function sort(?callable $callback = null)
     {
@@ -1404,6 +1411,7 @@ class LazyCollection implements Enumerable
 
     /**
      * Sort items in descending order.
+     * @return static
      */
     public function sortDesc(int $options = SORT_REGULAR)
     {
@@ -1415,6 +1423,7 @@ class LazyCollection implements Enumerable
      *
      * @param array<array-key, array{string, string}|(callable(TValue, TKey): mixed)|(callable(TValue, TValue): mixed)|string>|(callable(TValue, TKey): mixed)|string $callback
      * @param bool $descending
+     * @return static
      */
     public function sortBy($callback, int $options = SORT_REGULAR, $descending = false)
     {
@@ -1425,6 +1434,7 @@ class LazyCollection implements Enumerable
      * Sort the collection in descending order using the given callback.
      *
      * @param array<array-key, array{string, string}|(callable(TValue, TKey): mixed)|(callable(TValue, TValue): mixed)|string>|(callable(TValue, TKey): mixed)|string $callback
+     * @return static
      */
     public function sortByDesc($callback, int $options = SORT_REGULAR)
     {
@@ -1433,6 +1443,7 @@ class LazyCollection implements Enumerable
 
     /**
      * Sort the collection keys.
+     * @return static
      */
     public function sortKeys(int $options = SORT_REGULAR, bool $descending = false)
     {
@@ -1441,6 +1452,7 @@ class LazyCollection implements Enumerable
 
     /**
      * Sort the collection keys in descending order.
+     * @return static
      */
     public function sortKeysDesc(int $options = SORT_REGULAR)
     {
@@ -1451,6 +1463,7 @@ class LazyCollection implements Enumerable
      * Sort the collection keys using a callback.
      *
      * @param callable(TKey, TKey): int $callback
+     * @return static
      */
     public function sortKeysUsing(callable $callback)
     {
@@ -1459,6 +1472,7 @@ class LazyCollection implements Enumerable
 
     /**
      * Take the first or last {$limit} items.
+     * @return static
      */
     public function take(int $limit)
     {
@@ -1608,6 +1622,7 @@ class LazyCollection implements Enumerable
 
     /**
      * Convert a flatten "dot" notation array into an expanded array.
+     * @return static
      */
     public function undot()
     {
@@ -1618,6 +1633,7 @@ class LazyCollection implements Enumerable
      * Return only unique items from the collection array.
      *
      * @param null|(callable(TValue, TKey): mixed)|string $key
+     * @return static
      */
     public function unique(mixed $key = null, bool $strict = false)
     {
@@ -1780,6 +1796,7 @@ class LazyCollection implements Enumerable
      *
      * @param string $method
      * @param array<mixed> $params
+     * @return static
      */
     protected function passthru($method, array $params)
     {
