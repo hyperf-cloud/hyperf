@@ -194,7 +194,7 @@ class LazyCollection implements Enumerable
      *
      * @return static<int, mixed>
      */
-    public function collapse(): Enumerable
+    public function collapse(): static
     {
         return new static(function () {
             foreach ($this as $values) {
@@ -475,7 +475,7 @@ class LazyCollection implements Enumerable
      *
      * @return static<int, mixed>
      */
-    public function flatten(float|int $depth = INF): Enumerable
+    public function flatten(float|int $depth = INF): static
     {
         $instance = new static(function () use ($depth) {
             foreach ($this as $item) {
@@ -497,7 +497,7 @@ class LazyCollection implements Enumerable
      *
      * @return static<TValue, TKey>
      */
-    public function flip(): Enumerable
+    public function flip(): static
     {
         return new static(function () {
             foreach ($this as $key => $value) {
@@ -536,7 +536,7 @@ class LazyCollection implements Enumerable
      * @param array|(callable(TValue, TKey): array-key)|string $groupBy
      * @return static<array-key, static<array-key, TValue>>
      */
-    public function groupBy($groupBy, bool $preserveKeys = false): Enumerable
+    public function groupBy($groupBy, bool $preserveKeys = false): static
     {
         return $this->passthru('groupBy', func_get_args());
     }
@@ -766,7 +766,7 @@ class LazyCollection implements Enumerable
      * @param callable(TValue, TKey): TMapValue $callback
      * @return static<TKey, TMapValue>
      */
-    public function map(callable $callback): Enumerable
+    public function map(callable $callback): static
     {
         return new static(function () use ($callback) {
             foreach ($this as $key => $value) {
@@ -786,7 +786,7 @@ class LazyCollection implements Enumerable
      * @param callable(TValue, TKey): array<TMapToDictionaryKey, TMapToDictionaryValue> $callback
      * @return static<TMapToDictionaryKey, array<int, TMapToDictionaryValue>>
      */
-    public function mapToDictionary(callable $callback): Enumerable
+    public function mapToDictionary(callable $callback): static
     {
         return $this->passthru('mapToDictionary', func_get_args());
     }
@@ -802,7 +802,7 @@ class LazyCollection implements Enumerable
      * @param callable(TValue, TKey): array<TMapWithKeysKey, TMapWithKeysValue> $callback
      * @return static<TMapWithKeysKey, TMapWithKeysValue>
      */
-    public function mapWithKeys(callable $callback): Enumerable
+    public function mapWithKeys(callable $callback): static
     {
         return new static(function () use ($callback) {
             foreach ($this as $key => $value) {
@@ -1659,7 +1659,7 @@ class LazyCollection implements Enumerable
      * @param Arrayable<array-key, TZipValue>|iterable<array-key, TZipValue> ...$items
      * @return static<int, static<int, TValue|TZipValue>>
      */
-    public function zip($items): Enumerable
+    public function zip($items): static
     {
         $iterables = func_get_args();
 
@@ -1684,7 +1684,7 @@ class LazyCollection implements Enumerable
      * @param TPadValue $value
      * @return static<int, TPadValue|TValue>
      */
-    public function pad(int $size, $value): Enumerable
+    public function pad(int $size, $value): static
     {
         if ($size < 0) {
             return $this->passthru('pad', func_get_args());
