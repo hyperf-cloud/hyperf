@@ -463,7 +463,9 @@ class Collection implements Enumerable, ArrayAccess
 
     /**
      * Group an associative array by a field or using a callback.
-     * @param mixed $groupBy
+     *
+     * @param array|(callable(TValue, TKey): array-key)|string $groupBy
+     * @return static<array-key, static<array-key, TValue>>
      */
     public function groupBy($groupBy, bool $preserveKeys = false)
     {
