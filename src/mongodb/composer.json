@@ -1,0 +1,50 @@
+{
+    "name": "hyperf/mongodb",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "php",
+        "hyperf",
+        "mongodb"
+    ],
+    "description": "",
+    "autoload": {
+        "psr-4": {
+            "Hyperf\\Mongodb\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "HyperfTest\\Mongodb\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=7.2",
+        "ext-swoole": ">=4.4",
+        "hyperf/config": "~1.1.0",
+        "hyperf/contract": "~1.1.0",
+        "hyperf/pool": "~1.1.0",
+        "hyperf/utils": "~1.1.0",
+        "illuminate/database": "^6.11",
+        "jenssegers/mongodb": "^3.6",
+        "psr/container": "^1.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.14",
+        "hyperf/testing": "1.1.*",
+        "mockery/mockery": "^1.0",
+        "swoft/swoole-ide-helper": "dev-master"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "scripts": {
+        "test": "co-phpunit -c phpunit.xml --colors=always",
+        "cs-fix": "php-cs-fixer fix $1"
+    },
+    "extra": {
+        "hyperf": {
+            "config": "Hyperf\\Mongodb\\ConfigProvider"
+        }
+    }
+}
