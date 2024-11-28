@@ -16,6 +16,7 @@ use Doctrine\Instantiator\Instantiator;
 use Hyperf\Amqp\Annotation\Producer;
 use Hyperf\Amqp\DeclaredExchanges;
 use Hyperf\Amqp\Message\ProducerMessageInterface;
+use Hyperf\Amqp\Producer as AmqpProducer;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\AnnotationCollector;
@@ -56,7 +57,7 @@ class MainWorkerStartListener implements ListenerInterface
         // Declare exchange and routingKey
         $producerMessages = AnnotationCollector::getClassesByAnnotation(Producer::class);
         if ($producerMessages) {
-            $producer = $this->container->get(\Hyperf\Amqp\Producer::class);
+            $producer = $this->container->get(AmqpProducer::class);
             $instantiator = $this->container->get(Instantiator::class);
             /**
              * @var string $producerMessageClass
@@ -64,7 +65,7 @@ class MainWorkerStartListener implements ListenerInterface
              */
             foreach ($producerMessages as $producerMessageClass => $annotation) {
                 $instance = $instantiator->instantiate($producerMessageClass);
-                if (! $instance instanceof ProducerMessageInterface) {
+                if (! $instance instanceof ProducerMessageInterface || ! $instance->isAutoDeclare()) {
                     continue;
                 }
                 $annotation->exchange && $instance->setExchange($annotation->exchange);

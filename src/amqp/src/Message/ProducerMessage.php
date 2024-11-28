@@ -49,4 +49,9 @@ abstract class ProducerMessage extends Message implements ProducerMessageInterfa
         $packer = ApplicationContext::getContainer()->get(Packer::class);
         return $packer->pack($this->payload);
     }
+
+    public function isAutoDeclare(): bool
+    {
+        return true;
+    }
 }

@@ -358,6 +358,10 @@
 - [#5760](https://github.com/hyperf/hyperf/pull/5760) Added namespace for functions of `hyperf/translation`.
 - [#5761](https://github.com/hyperf/hyperf/pull/5761) Added `Hyperf\Coordinator\Timer::until()`.
 
+## Added
+
+- [#5745](https://github.com/hyperf/hyperf/pull/5745) Added `Hyperf\Amqp\Message\ProducerMessageInterface::isAuthDeclare()` to control whether to declare automatically.
+
 ## Optimized
 
 - [#5741](https://github.com/hyperf/hyperf/pull/5741) Added deprecated comments to `Hyperf\DB\MySQLConnection`.
