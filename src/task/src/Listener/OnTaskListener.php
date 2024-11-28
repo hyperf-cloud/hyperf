@@ -21,6 +21,7 @@ use Psr\Container\ContainerInterface;
 use Throwable;
 
 use function Hyperf\Support\call;
+use function is_callable;
 
 class OnTaskListener implements ListenerInterface
 {
@@ -53,7 +54,7 @@ class OnTaskListener implements ListenerInterface
 
     protected function call(Task $data)
     {
-        if (is_array($data->callback)) {
+        if (is_array($data->callback) && ! is_callable($data->callback)) {
             [$class, $method] = $data->callback;
             if ($this->container->has($class)) {
                 $obj = $this->container->get($class);

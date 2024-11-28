@@ -12,12 +12,14 @@ declare(strict_types=1);
 
 namespace Hyperf\Task;
 
+use Closure;
+
 class Task
 {
-    /**
-     * @param array|callable $callback
-     */
-    public function __construct(public mixed $callback, public array $arguments = [], public int $workerId = -1)
+    public Closure|array $callback;
+
+    public function __construct(callable|array $callback, public array $arguments = [], public int $workerId = -1)
     {
+        $this->callback = $callback;
     }
 }
