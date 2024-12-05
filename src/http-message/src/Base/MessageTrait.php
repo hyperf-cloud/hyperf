@@ -14,7 +14,6 @@ namespace Hyperf\HttpMessage\Base;
 
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use InvalidArgumentException;
-use Laminas\Mime\Decode;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
 use Throwable;
@@ -299,7 +298,7 @@ trait MessageTrait
      */
     public function getHeaderField(string $name, string $wantedPart = '0', string $firstName = '0')
     {
-        return Decode::splitHeaderField($this->getHeaderLine($name), $wantedPart, $firstName);
+        return $this->splitHeaderField($this->getHeaderLine($name), $wantedPart, $firstName);
     }
 
     public function getContentType(): string
@@ -446,5 +445,56 @@ trait MessageTrait
             $result[] = trim((string) $value, " \t");
         }
         return $result;
+    }
+
+    /**
+     * split a header field like content type in its different parts.
+     *
+     * @param string $field header field
+     * @param string $wantedPart the wanted part, else an array with all parts is returned
+     * @param string $firstName key name for the first part
+     * @return array|string wanted part or all parts as array($firstName => firstPart, partname => value)
+     * @throws RuntimeException
+     */
+    private function splitHeaderField(string $field, ?string $wantedPart = null, string $firstName = '0'): array|string
+    {
+        $wantedPart = strtolower($wantedPart ?? '');
+        $firstName = strtolower($firstName);
+
+        // special case - a bit optimized
+        if ($firstName === $wantedPart) {
+            $field = strtok($field, ';');
+            return $field[0] === '"' ? substr($field, 1, -1) : $field;
+        }
+
+        $field = $firstName . '=' . $field;
+        if (! preg_match_all('%([^=\s]+)\s*=\s*("[^"]+"|[^;]+)(;\s*|$)%', $field, $matches)) {
+            throw new RuntimeException('not a valid header field');
+        }
+
+        if ($wantedPart) {
+            foreach ($matches[1] as $key => $name) {
+                if (strcasecmp($name, $wantedPart)) {
+                    continue;
+                }
+                if ($matches[2][$key][0] !== '"') {
+                    return $matches[2][$key];
+                }
+                return substr($matches[2][$key], 1, -1);
+            }
+            return '';
+        }
+
+        $split = [];
+        foreach ($matches[1] as $key => $name) {
+            $name = strtolower($name);
+            if ($matches[2][$key][0] === '"') {
+                $split[$name] = substr($matches[2][$key], 1, -1);
+            } else {
+                $split[$name] = $matches[2][$key];
+            }
+        }
+
+        return $split;
     }
 }
