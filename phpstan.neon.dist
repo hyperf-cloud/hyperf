@@ -22,6 +22,7 @@ parameters:
     - %currentWorkingDirectory%/src/config-zookeeper/src/Client.php
     - %currentWorkingDirectory%/src/database/*
     - %currentWorkingDirectory%/src/database-pgsql/*
+    - %currentWorkingDirectory%/src/database-sqlserver/*
     - %currentWorkingDirectory%/src/db/src/PgSQL/*
     - %currentWorkingDirectory%/src/filesystem/*
     - %currentWorkingDirectory%/src/grpc/*

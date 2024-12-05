@@ -458,6 +458,7 @@
 - [#6577](https://github.com/hyperf/hyperf/pull/6577) Support setup command traits before running.
 - [#6579](https://github.com/hyperf/hyperf/pull/6579) Added `now()` and `today()` helper functions.
 - [#6590](https://github.com/hyperf/hyperf/pull/6590) Added `--graceful` to  migrateCommand.
+- [#6627](https://github.com/hyperf/hyperf/pull/6627) Added `database-sqlserver` component.
 
 ## Fixed
 
