@@ -1161,12 +1161,14 @@ class Connection implements ConnectionInterface
             ++$this->errorCount;
             if ($this->isUniqueConstraintError($e)) {
                 throw new UniqueConstraintViolationException(
+                    $this->getName(),
                     $query,
                     $this->prepareBindings($bindings),
                     $e
                 );
             }
             throw new QueryException(
+                $this->getName(),
                 $query,
                 $this->prepareBindings($bindings),
                 $e

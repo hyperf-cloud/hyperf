@@ -58,7 +58,7 @@ class PostgreSqlSwooleExtConnection extends Connection
 
             $result = $statement->execute($this->prepareBindings($bindings));
             if ($result === false) {
-                throw new QueryException($query, $bindings, new Exception($statement->error, $statement->errCode));
+                throw new QueryException($this->getName(), $query, $bindings, new Exception($statement->error, $statement->errCode));
             }
 
             $this->recordsHaveBeenModified();
@@ -84,7 +84,7 @@ class PostgreSqlSwooleExtConnection extends Connection
 
             $count = $statement->affectedRows();
             if ($count === false) {
-                throw new QueryException($query, $bindings, new Exception($statement->error, $statement->errCode));
+                throw new QueryException($this->getName(), $query, $bindings, new Exception($statement->error, $statement->errCode));
             }
 
             $this->recordsHaveBeenModified($count > 0);
@@ -108,7 +108,7 @@ class PostgreSqlSwooleExtConnection extends Connection
             $result = $statement->execute($this->prepareBindings($bindings));
 
             if ($result === false || ! empty($statement->error)) {
-                throw new QueryException($query, [], new Exception($statement->error));
+                throw new QueryException($this->getName(), $query, [], new Exception($statement->error));
             }
 
             return $statement->fetchAll($this->fetchMode) ?: [];
@@ -150,7 +150,7 @@ class PostgreSqlSwooleExtConnection extends Connection
 
         $result = $statement->execute($bindings);
         if (! $result) {
-            throw new QueryException($query, [], new Exception($statement->error));
+            throw new QueryException($this->getName(), $query, [], new Exception($statement->error));
         }
 
         return $statement->fetchAll();
@@ -239,7 +239,7 @@ class PostgreSqlSwooleExtConnection extends Connection
         $pdo = $this->getPdoForSelect($useReadPdo);
         $statement = $pdo->prepare($query);
         if (! $statement) {
-            throw new QueryException($query, [], new Exception($pdo->error));
+            throw new QueryException($this->getName(), $query, [], new Exception($pdo->error));
         }
 
         return $statement;
