@@ -594,7 +594,7 @@ class Connection implements ConnectionInterface
     {
         $schema = $this->getDoctrineSchemaManager();
 
-        return $schema->listTableDetails($table)->getColumn($column);
+        return $schema->introspectTable($table)->getColumn($column);
     }
 
     /**
@@ -606,10 +606,7 @@ class Connection implements ConnectionInterface
     {
         $connection = $this->getDoctrineConnection();
 
-        return $this->getDoctrineDriver()->getSchemaManager(
-            $connection,
-            $connection->getDatabasePlatform()
-        );
+        return $connection->getDatabasePlatform()->createSchemaManager($connection);
     }
 
     /**
