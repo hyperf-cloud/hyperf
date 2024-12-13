@@ -27,7 +27,7 @@ class ClientBuilderFactory
     /**
      * @return ClientBuilder|\Elastic\Elasticsearch\ClientBuilder
      */
-    public function create() // @phpstan-ignore-line
+    public function create() // @phpstan-ignore class.notFound
     {
         if (class_exists('Elastic\Elasticsearch\ClientBuilder')) {
             $builder = \Elastic\Elasticsearch\ClientBuilder::create();
