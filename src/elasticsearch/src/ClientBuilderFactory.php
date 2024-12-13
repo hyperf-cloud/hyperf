@@ -14,17 +14,40 @@ namespace Hyperf\Elasticsearch;
 
 use Elasticsearch\ClientBuilder;
 use Hyperf\Coroutine\Coroutine;
+use Hyperf\Guzzle\ClientFactory;
 use Hyperf\Guzzle\RingPHP\CoroutineHandler;
+use RuntimeException;
 
 class ClientBuilderFactory
 {
-    public function create(): ClientBuilder
+    public function __construct(protected ClientFactory $guzzleClientFactory)
     {
-        $builder = ClientBuilder::create();
-        if (Coroutine::inCoroutine()) {
-            $builder->setHandler(new CoroutineHandler());
+    }
+
+    /**
+     * @return ClientBuilder|\Elastic\Elasticsearch\ClientBuilder
+     */
+    public function create() // @phpstan-ignore-line
+    {
+        if (class_exists('Elastic\Elasticsearch\ClientBuilder')) {
+            $builder = \Elastic\Elasticsearch\ClientBuilder::create();
+            $builder->setHttpClient(
+                $this->guzzleClientFactory->create()
+            );
+
+            return $builder;
         }
 
-        return $builder;
+        if (class_exists('Elasticsearch\ClientBuilder')) {
+            $builder = ClientBuilder::create();
+            if (Coroutine::inCoroutine()) {
+                $builder->setHandler(new CoroutineHandler());
+            }
+
+            return $builder;
+        }
+
+        // Will not be here
+        throw new RuntimeException('The "elasticsearch/elasticsearch" package is required to use ClientBuilder, Please run "composer require elasticsearch/elasticsearch".');
     }
 }
