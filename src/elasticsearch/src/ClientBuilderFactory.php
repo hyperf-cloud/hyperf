@@ -20,7 +20,7 @@ use RuntimeException;
 
 class ClientBuilderFactory
 {
-    public function __construct(protected ClientFactory $guzzleClientFactory)
+    public function __construct(protected ?ClientFactory $guzzleClientFactory = null)
     {
     }
 
@@ -31,7 +31,7 @@ class ClientBuilderFactory
     {
         if (class_exists('Elastic\Elasticsearch\ClientBuilder')) {
             $builder = \Elastic\Elasticsearch\ClientBuilder::create();
-            $builder->setHttpClient(
+            $this->guzzleClientFactory && $builder->setHttpClient(
                 $this->guzzleClientFactory->create()
             );
 
