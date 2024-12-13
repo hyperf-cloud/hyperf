@@ -17,4 +17,9 @@ use Stringable;
 interface Jsonable extends Stringable
 {
     public function __toString(): string;
+
+    /**
+     * Convert the object to its JSON representation.
+     */
+    public function toJson(int $options = 0): string;
 }
