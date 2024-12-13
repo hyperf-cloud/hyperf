@@ -14,6 +14,7 @@ namespace HyperfTest\ExceptionHandler;
 
 use ErrorException;
 use Hyperf\ExceptionHandler\Listener\ErrorExceptionHandler;
+use Mockery;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\WithoutErrorHandler;
 use PHPUnit\Framework\TestCase;
@@ -25,10 +26,17 @@ use PHPUnit\Framework\TestCase;
 #[CoversNothing]
 class ErrorExceptionHandlerTest extends TestCase
 {
+    protected function tearDown(): void
+    {
+        Mockery::close();
+    }
+
     #[WithoutErrorHandler]
     public function testHandleError()
     {
-        $listener = new ErrorExceptionHandler();
+        $container = Mockery::mock(\Psr\Container\ContainerInterface::class);
+        $container->shouldReceive('has')->with(\Hyperf\Contract\StdoutLoggerInterface::class)->andReturn(false);
+        $listener = new ErrorExceptionHandler($container);
         $listener->process((object) []);
 
         $this->expectException(ErrorException::class);
