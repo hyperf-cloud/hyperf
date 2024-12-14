@@ -1014,6 +1014,7 @@ class QueryBuilderTest extends TestCase
             // $this->assertEquals('select * from "users" offset 0', $builder->toSql());
         } catch (Exception $e) {
             $this->assertInstanceOf(InvalidArgumentException::class, $e);
+            $this->assertStringContainsString('Limit cannot be negative.', $e->getMessage());
         }
     }
 
