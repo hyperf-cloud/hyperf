@@ -1,5 +1,9 @@
 # v3.1.50 - TBD
 
+## Improved
+
+- [#7217](https://github.com/hyperf/hyperf/pull/7217) Improved `hasAny` using `array_key_exists`.
+
 # v3.1.49 - 2024-12-17
 
 ## Optimized
