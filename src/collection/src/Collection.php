@@ -520,7 +520,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
         $keys = is_array($key) ? $key : func_get_args();
 
         foreach ($keys as $value) {
-            if ($this->has($value)) {
+            if (array_key_exists($value, $this->items)) {
                 return true;
             }
         }
