@@ -2,7 +2,15 @@ name: PHPUnit for Hyperf
 
 on:
   push:
+    paths:
+      - "**"
+      - "!docs/**"
+      - "!**.md"
   pull_request:
+    paths:
+      - "**"
+      - "!docs/**"
+      - "!**.md"
   schedule:
     - cron: '0 14 * * *'
 
@@ -14,7 +22,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         php: [ '8.1' ]
-        swoole: [ 'swoole']
+        swoole: [ 'swoole' ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -40,7 +48,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         php-version: [ '8.3', '8.2', '8.1' ]
-        sw-version: [ 'v5.0.3', 'v5.1.4', 'v6.0.0-alpha', 'master' ]
+        sw-version: [ 'v5.0.3', 'v5.1.6', 'v6.0.0', 'master' ]
         exclude:
           - php-version: '8.3'
             sw-version: 'v5.0.3'

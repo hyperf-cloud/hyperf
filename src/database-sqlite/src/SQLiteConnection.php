@@ -15,6 +15,7 @@ namespace Hyperf\Database\SQLite;
 use Closure;
 use Doctrine\DBAL\Driver\PDO\SQLite\Driver;
 use Doctrine\DBAL\Driver\PDO\SQLite\Driver as DoctrineDriver;
+use Exception;
 use Hyperf\Database\Connection;
 use Hyperf\Database\Query\Grammars\Grammar as HyperfQueryGrammar;
 use Hyperf\Database\Query\Processors\Processor;
@@ -63,6 +64,16 @@ class SQLiteConnection extends Connection
         }
 
         return new SQLiteBuilder($this);
+    }
+
+    /**
+     * Determine if the given database exception was caused by a unique constraint violation.
+     *
+     * @return bool
+     */
+    protected function isUniqueConstraintError(Exception $exception)
+    {
+        return boolval(preg_match('#(column(s)? .* (is|are) not unique|UNIQUE constraint failed: .*)#i', $exception->getMessage()));
     }
 
     /**

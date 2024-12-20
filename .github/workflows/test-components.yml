@@ -2,11 +2,19 @@ name: Test for Hyperf Components
 
 on:
   push:
+    paths:
+      - "**"
+      - "!docs/**"
+      - "!**.md"
   pull_request:
+    paths:
+      - "**"
+      - "!docs/**"
+      - "!**.md"
   schedule:
     - cron: '0 2 * * *'
 env:
-  SW_VERSION: 'v5.1.4'
+  SW_VERSION: 'v5.1.6'
 jobs:
   database:
     name: Test for Database

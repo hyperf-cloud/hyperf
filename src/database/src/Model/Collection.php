@@ -21,6 +21,7 @@ use Hyperf\Contract\UnCompressInterface;
 use Hyperf\Stringable\Str;
 use RuntimeException;
 
+use function Hyperf\Collection\head;
 use function Hyperf\Support\value;
 
 /**
@@ -61,6 +62,37 @@ class Collection extends BaseCollection implements CompressInterface
         return Arr::first($this->items, function ($model) use ($key) {
             return $model->getKey() === $key;
         }, $default);
+    }
+
+    /**
+     * Find a model in the collection by key or throw an exception.
+     *
+     * @return TModel
+     *
+     * @throws ModelNotFoundException
+     */
+    public function findOrFail(mixed $key)
+    {
+        $result = $this->find($key);
+
+        if (is_array($key) && count($result) === count(array_unique($key))) {
+            return $result;
+        }
+        if (! is_array($key) && ! is_null($result)) {
+            return $result;
+        }
+
+        $exception = new ModelNotFoundException();
+
+        if (! $model = head($this->items)) {
+            throw $exception;
+        }
+
+        $ids = is_array($key) ? array_diff($key, $result->modelKeys()) : $key;
+
+        $exception->setModel(get_class($model), $ids);
+
+        throw $exception;
     }
 
     /**

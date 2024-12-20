@@ -78,6 +78,6 @@ function run($callbacks, int $flags = SWOOLE_HOOK_ALL): bool
     /* @phpstan-ignore-next-line */
     $result = \Swoole\Coroutine\run(...(array) $callbacks);
 
-    Runtime::enableCoroutine(false);
+    Runtime::enableCoroutine(0);
     return $result;
 }

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Hyperf\Database\PgSQL;
 
+use Exception;
 use Hyperf\Database\Connection;
 use Hyperf\Database\PgSQL\DBAL\PostgresDriver;
 use Hyperf\Database\PgSQL\Query\Grammars\PostgresGrammar as QueryGrammar;
@@ -46,6 +47,16 @@ class PostgreSqlConnection extends Connection
                 $value
             );
         }
+    }
+
+    /**
+     * Determine if the given database exception was caused by a unique constraint violation.
+     *
+     * @return bool
+     */
+    protected function isUniqueConstraintError(Exception $exception)
+    {
+        return $exception->getCode() === '23505';
     }
 
     /**

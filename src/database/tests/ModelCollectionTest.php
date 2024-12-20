@@ -17,6 +17,7 @@ use Hyperf\Collection\Collection as BaseCollection;
 use Hyperf\Database\ConnectionResolverInterface;
 use Hyperf\Database\Model\Collection;
 use Hyperf\Database\Model\Model;
+use Hyperf\Database\Model\ModelNotFoundException;
 use Hyperf\Database\Model\Register;
 use Hyperf\Database\Schema\Schema;
 use Hyperf\Engine\Channel;
@@ -237,6 +238,59 @@ class ModelCollectionTest extends TestCase
         $this->assertCount(2, $c->find(collect([2, 3, 4])));
         $this->assertEquals([2, 3], $c->find(collect([2, 3, 4]))->pluck('id')->all());
         $this->assertEquals([2, 3], $c->find([2, 3, 4])->pluck('id')->all());
+    }
+
+    public function testFindOrFailFindsModelById()
+    {
+        $mockModel = m::mock(Model::class);
+        $mockModel->shouldReceive('getKey')->andReturn(1);
+        $c = new Collection([$mockModel]);
+
+        $this->assertSame($mockModel, $c->findOrFail(1));
+    }
+
+    public function testFindOrFailFindsManyModelsById()
+    {
+        $model1 = (new TestUserModel())->forceFill(['id' => 1]);
+        $model2 = (new TestUserModel())->forceFill(['id' => 2]);
+
+        $c = new Collection();
+        $this->assertInstanceOf(Collection::class, $c->findOrFail([]));
+        $this->assertCount(0, $c->findOrFail([]));
+
+        $c->push($model1);
+        $this->assertCount(1, $c->findOrFail([1]));
+        $this->assertEquals(1, $c->findOrFail([1])->first()->id);
+
+        $c->push($model2);
+        $this->assertCount(2, $c->findOrFail([1, 2]));
+
+        $this->expectException(ModelNotFoundException::class);
+        $this->expectExceptionMessage('No query results for model [HyperfTest\Database\TestUserModel] 3');
+
+        $c->findOrFail([1, 2, 3]);
+    }
+
+    public function testFindOrFailThrowsExceptionWithMessageWhenOtherModelsArePresent()
+    {
+        $model = (new TestUserModel())->forceFill(['id' => 1]);
+
+        $c = new Collection([$model]);
+
+        $this->expectException(ModelNotFoundException::class);
+        $this->expectExceptionMessage('No query results for model [HyperfTest\Database\TestUserModel] 2');
+
+        $c->findOrFail(2);
+    }
+
+    public function testFindOrFailThrowsExceptionWithoutMessageWhenOtherModelsAreNotPresent()
+    {
+        $c = new Collection();
+
+        $this->expectException(ModelNotFoundException::class);
+        $this->expectExceptionMessage('');
+
+        $c->findOrFail(1);
     }
 
     public function testLoadMethodEagerLoadsGivenRelationships()
