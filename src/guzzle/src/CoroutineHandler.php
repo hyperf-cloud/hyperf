@@ -77,7 +77,8 @@ class CoroutineHandler
         try {
             $raw = $client->request($request->getMethod(), $path, $headers, (string) $request->getBody());
         } catch (Exception $exception) {
-            $exception = new ConnectException($exception->getMessage(), $request, null, [
+            $message = sprintf('Failed to connecting to %s port %s, %s', $host, $port, $exception->getMessage());
+            $exception = new ConnectException($message, $request, null, [
                 'errCode' => $exception->getCode(),
             ]);
             return Create::rejectionFor($exception);
