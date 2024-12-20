@@ -30,77 +30,63 @@ class Blueprint
 
     /**
      * The storage engine that should be used for the table.
-     *
-     * @var string
      */
-    public $engine;
+    public string $engine;
 
     /**
      * The default character set that should be used for the table.
      */
-    public $charset;
+    public string $charset;
 
     /**
      * The collation that should be used for the table.
      */
-    public $collation;
+    public string $collation;
 
     /**
      * Whether to make the table temporary.
-     *
-     * @var bool
      */
-    public $temporary = false;
+    public bool $temporary = false;
 
     /**
      * The column to add new columns after.
-     *
      * @var string
      */
     public $after;
 
     /**
      * The comment of the table.
-     *
-     * @var string
      */
-    protected $comment = '';
+    protected string $comment = '';
 
     /**
      * The table the blueprint describes.
-     *
-     * @var string
      */
-    protected $table;
+    protected string $table;
 
     /**
      * The prefix of the table.
-     *
-     * @var string
      */
-    protected $prefix;
+    protected string $prefix;
 
     /**
      * The columns that should be added to the table.
      *
      * @var ColumnDefinition[]
      */
-    protected $columns = [];
+    protected array $columns = [];
 
     /**
      * The commands that should be run for the table.
      *
      * @var Fluent[]
      */
-    protected $commands = [];
+    protected array $commands = [];
 
     /**
      * Create a new schema blueprint.
-     *
-     * @param string $table
-     * @param string $prefix
      */
-    public function __construct($table, ?Closure $callback = null, $prefix = '')
+    public function __construct(string $table, ?Closure $callback = null, string $prefix = '')
     {
         $this->table = $table;
         $this->prefix = $prefix;
@@ -113,7 +99,7 @@ class Blueprint
     /**
      * Execute the blueprint against the database.
      */
-    public function build(Connection $connection, Grammar $grammar)
+    public function build(Connection $connection, Grammar $grammar): void
     {
         foreach ($this->toSql($connection, $grammar) as $statement) {
             $connection->statement($statement);
@@ -138,10 +124,8 @@ class Blueprint
 
     /**
      * Get the raw SQL statements for the blueprint.
-     *
-     * @return array
      */
-    public function toSql(Connection $connection, Grammar $grammar)
+    public function toSql(Connection $connection, Grammar $grammar): array
     {
         $this->addImpliedCommands($grammar);
 
@@ -168,7 +152,7 @@ class Blueprint
     /**
      * Add the fluent commands specified on any columns.
      */
-    public function addFluentCommands(Grammar $grammar)
+    public function addFluentCommands(Grammar $grammar): void
     {
         foreach ($this->columns as $column) {
             foreach ($grammar->getFluentCommands() as $commandName) {
@@ -217,7 +201,7 @@ class Blueprint
     /**
      * Set the table comment.
      */
-    public function comment(string $comment)
+    public function comment(string $comment): void
     {
         $this->comment = $comment;
     }
@@ -225,7 +209,7 @@ class Blueprint
     /**
      * Indicate that the table needs to be temporary.
      */
-    public function temporary()
+    public function temporary(): void
     {
         $this->temporary = true;
     }
@@ -356,7 +340,7 @@ class Blueprint
     /**
      * Indicate that the timestamp columns should be dropped.
      */
-    public function dropTimestamps()
+    public function dropTimestamps(): void
     {
         $this->dropColumn('created_at', 'updated_at');
     }
@@ -364,7 +348,7 @@ class Blueprint
     /**
      * Indicate that the timestamp columns should be dropped.
      */
-    public function dropTimestampsTz()
+    public function dropTimestampsTz(): void
     {
         $this->dropTimestamps();
     }
@@ -374,7 +358,7 @@ class Blueprint
      *
      * @param string $column
      */
-    public function dropSoftDeletes($column = 'deleted_at')
+    public function dropSoftDeletes($column = 'deleted_at'): void
     {
         $this->dropColumn($column);
     }
@@ -384,7 +368,7 @@ class Blueprint
      *
      * @param string $column
      */
-    public function dropSoftDeletesTz($column = 'deleted_at')
+    public function dropSoftDeletesTz($column = 'deleted_at'): void
     {
         $this->dropSoftDeletes($column);
     }
@@ -392,7 +376,7 @@ class Blueprint
     /**
      * Indicate that the remember token column should be dropped.
      */
-    public function dropRememberToken()
+    public function dropRememberToken(): void
     {
         $this->dropColumn('remember_token');
     }
@@ -403,7 +387,7 @@ class Blueprint
      * @param string $name
      * @param null|string $indexName
      */
-    public function dropMorphs($name, $indexName = null)
+    public function dropMorphs($name, $indexName = null): void
     {
         $this->dropIndex($indexName ?: $this->createIndexName('index', ["{$name}_type", "{$name}_id"]));
 
@@ -952,7 +936,7 @@ class Blueprint
      *
      * @param int $precision
      */
-    public function timestamps($precision = 0)
+    public function timestamps($precision = 0): void
     {
         $this->timestamp('created_at', $precision)->nullable();
 
@@ -966,7 +950,7 @@ class Blueprint
      *
      * @param int $precision
      */
-    public function nullableTimestamps($precision = 0)
+    public function nullableTimestamps($precision = 0): void
     {
         $this->timestamps($precision);
     }
@@ -976,7 +960,7 @@ class Blueprint
      *
      * @param int $precision
      */
-    public function timestampsTz($precision = 0)
+    public function timestampsTz($precision = 0): void
     {
         $this->timestampTz('created_at', $precision)->nullable();
 
@@ -988,7 +972,7 @@ class Blueprint
      *
      * @param null|int $precision
      */
-    public function datetimes($precision = 0)
+    public function datetimes($precision = 0): void
     {
         $this->datetime('created_at', $precision)->nullable();
 
@@ -1295,20 +1279,16 @@ class Blueprint
 
     /**
      * Get the table the blueprint describes.
-     *
-     * @return string
      */
-    public function getTable()
+    public function getTable(): string
     {
         return $this->table;
     }
 
     /**
      * Get the comment on the blueprint.
-     *
-     * @return string
      */
-    public function getComment()
+    public function getComment(): string
     {
         return $this->comment;
     }
@@ -1318,7 +1298,7 @@ class Blueprint
      *
      * @return ColumnDefinition[]
      */
-    public function getColumns()
+    public function getColumns(): array
     {
         return $this->columns;
     }
@@ -1328,7 +1308,7 @@ class Blueprint
      *
      * @return Fluent[]
      */
-    public function getCommands()
+    public function getCommands(): array
     {
         return $this->commands;
     }
@@ -1338,7 +1318,7 @@ class Blueprint
      *
      * @return ColumnDefinition[]
      */
-    public function getAddedColumns()
+    public function getAddedColumns(): array
     {
         return array_filter($this->columns, function ($column) {
             return ! $column->change;
@@ -1350,7 +1330,7 @@ class Blueprint
      *
      * @return ColumnDefinition[]
      */
-    public function getChangedColumns()
+    public function getChangedColumns(): array
     {
         return array_filter($this->columns, function ($column) {
             return (bool) $column->change;
@@ -1443,7 +1423,7 @@ class Blueprint
      *
      * @throws BadMethodCallException
      */
-    protected function ensureCommandsAreValid(Connection $connection)
+    protected function ensureCommandsAreValid(Connection $connection): void
     {
         if ($connection instanceof SQLiteConnection) {
             if ($this->commandsNamed(['dropColumn', 'renameColumn'])->count() > 1) {
@@ -1462,10 +1442,8 @@ class Blueprint
 
     /**
      * Get all of the commands matching the given names.
-     *
-     * @return Collection
      */
-    protected function commandsNamed(array $names)
+    protected function commandsNamed(array $names): Collection
     {
         return collect($this->commands)->filter(function ($command) use ($names) {
             return in_array($command->name, $names);
@@ -1475,7 +1453,7 @@ class Blueprint
     /**
      * Add the commands that are implied by the blueprint's state.
      */
-    protected function addImpliedCommands(Grammar $grammar)
+    protected function addImpliedCommands(Grammar $grammar): void
     {
         if (count($this->getAddedColumns()) > 0 && ! $this->creating()) {
             array_unshift($this->commands, $this->createCommand('add'));
@@ -1493,7 +1471,7 @@ class Blueprint
     /**
      * Add the index commands fluently specified on columns.
      */
-    protected function addFluentIndexes()
+    protected function addFluentIndexes(): void
     {
         foreach ($this->columns as $column) {
             foreach (['primary', 'unique', 'index', 'fullText', 'spatialIndex'] as $index) {
@@ -1520,10 +1498,8 @@ class Blueprint
 
     /**
      * Determine if the blueprint has a create command.
-     *
-     * @return bool
      */
-    protected function creating()
+    protected function creating(): bool
     {
         return collect($this->commands)->contains(function ($command) {
             return $command->name === 'create';
@@ -1580,9 +1556,8 @@ class Blueprint
      * Create a default index name for the table.
      *
      * @param string $type
-     * @return string
      */
-    protected function createIndexName($type, array $columns)
+    protected function createIndexName($type, array $columns): string
     {
         $index = strtolower($this->prefix . $this->table . '_' . implode('_', $columns) . '_' . $type);
 
@@ -1606,9 +1581,8 @@ class Blueprint
      * Create a new Fluent command.
      *
      * @param string $name
-     * @return Fluent
      */
-    protected function createCommand($name, array $parameters = [])
+    protected function createCommand($name, array $parameters = []): Fluent
     {
         return new Fluent(array_merge(compact('name'), $parameters));
     }

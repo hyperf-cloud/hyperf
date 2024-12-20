@@ -214,10 +214,8 @@ class MySqlBuilder extends Builder
 
     /**
      * Get all the view names for the database.
-     *
-     * @return array
      */
-    protected function getAllViews()
+    protected function getAllViews(): array
     {
         return $this->connection->select(
             $this->grammar->compileGetAllViews()
