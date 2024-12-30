@@ -26,6 +26,8 @@ use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function Hyperf\Collection\collect;
+
 #[Command]
 class RoutesCommand extends HyperfCommand
 {
@@ -41,6 +43,24 @@ class RoutesCommand extends HyperfCommand
 
         $factory = $this->container->get(DispatcherFactory::class);
         $router = $factory->getRouter($server);
+        $routes = $this->analyzeRouter($server, $router, $path);
+
+        if ($this->input->getOption('json')) {
+            $routes = collect($routes)
+                ->map(function ($route) {
+                    return [
+                        'server' => $route['server'],
+                        'method' => implode('|', $route['method']),
+                        'uri' => $route['uri'],
+                        'action' => $route['action'],
+                        'middleware' => implode(',', explode("\n", $route['middleware'])),
+                    ];
+                })
+                ->toArray();
+            $this->output->writeln(json_encode($routes, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            return;
+        }
+
         $this->show(
             $this->analyzeRouter($server, $router, $path),
             $this->output
@@ -51,7 +71,8 @@ class RoutesCommand extends HyperfCommand
     {
         $this->setDescription('Describe the routes information.')
             ->addOption('path', 'p', InputOption::VALUE_OPTIONAL, 'Get the detail of the specified route information by path')
-            ->addOption('server', 'S', InputOption::VALUE_OPTIONAL, 'Which server you want to describe routes.', 'http');
+            ->addOption('server', 'S', InputOption::VALUE_OPTIONAL, 'Which server you want to describe routes.', 'http')
+            ->addOption('json', null, InputOption::VALUE_NONE, 'Output the routes information in json format.');
     }
 
     protected function analyzeRouter(string $server, RouteCollector $router, ?string $path)
