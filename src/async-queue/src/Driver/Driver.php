@@ -73,18 +73,18 @@ abstract class Driver implements DriverInterface
                     parallel([$callback]);
                 }
 
-                if ($messageCount % $this->lengthCheckCount === 0) {
+                if ($messageCount > 0 && $messageCount % $this->lengthCheckCount === 0) {
                     $this->checkQueueLength();
                 }
 
                 if ($maxMessages > 0 && $messageCount >= $maxMessages) {
                     break;
                 }
+                ++$messageCount;
             } catch (Throwable $exception) {
+                ++$messageCount;
                 $logger = $this->container->get(StdoutLoggerInterface::class);
                 $logger->error((string) $exception);
-            } finally {
-                ++$messageCount;
             }
         }
     }
