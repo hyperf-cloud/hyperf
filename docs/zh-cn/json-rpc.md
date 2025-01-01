@@ -476,4 +476,62 @@ return [
 
 ```
 
+### 协议&数据
 
+框架中的默认定义了 `jsonrpc`, `jsonrpc-tcp-length-check`, `jsonrpc-http` 三种协议。主要区别在于数据的打包及传输方式，而数据结构及请求路径均相同。注册协议监听器代码示例
+```php
+## Hyperf\JsonRpc\Listener\RegisterProtocolListener
+
+public function process(object $event): void
+{
+    $this->protocolManager->register('jsonrpc', [
+        'packer' => JsonEofPacker::class,
+        'transporter' => JsonRpcTransporter::class,
+        'path-generator' => PathGenerator::class,
+        'data-formatter' => DataFormatter::class,
+    ]);
+
+    $this->protocolManager->register('jsonrpc-tcp-length-check', [
+        'packer' => JsonLengthPacker::class,
+        'transporter' => JsonRpcTransporter::class,
+        'path-generator' => PathGenerator::class,
+        'data-formatter' => DataFormatter::class,
+    ]);
+
+    $this->protocolManager->register('jsonrpc-http', [
+        'packer' => JsonPacker::class,
+        'transporter' => JsonRpcHttpTransporter::class,
+        'path-generator' => PathGenerator::class,
+        'data-formatter' => DataFormatter::class,
+    ]);
+}
+
+```
+协议的数据结构符合[JSON-RPC2.0规范]((http://wiki.geekdream.com/Specification/json-rpc_2.0.html))。请求对象中会包含`jsonrpc`, `method`, `params`, `id` 四个成员。其中 params 为调用方法的参数值，method 为调用方法名称。
+在启动 jsonrpc 服务时，框架会根据指定协议中的路径生成器来注册服务中方法的路由，发起请求时的 method 则需要与生成的路由对应。服务提供者示例
+```php
+<?php
+
+namespace App\JsonRpc;
+
+use Hyperf\RpcServer\Annotation\RpcService;
+
+#[RpcService(name: 'Test', server: 'jsonRpc', protocol: 'jsonrpc', publishTo: 'nacos')]
+class TestService
+{
+    public function hi() : int
+    {
+        return 1;
+    }
+
+}
+```
+此时会注册一个hi方法的路由为`/Test/hi`。调用方发起请求的数据结构应该为
+```json
+{"jsonrpc": "2.0", "method": "/Test/hi", "id": 1}
+```
+响应数据结构为
+```json
+{"jsonrpc": "2.0", "result": 1, "id": 1}
+
+```
