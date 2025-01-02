@@ -2059,10 +2059,13 @@ class Builder
     public function limit($value)
     {
         $property = $this->unions ? 'unionLimit' : 'limit';
+        $value = (int) $value;
 
-        if ($value >= 0) {
-            $this->{$property} = $value;
+        if ($value < 0) {
+            throw new InvalidArgumentException('Limit cannot be negative.');
         }
+
+        $this->{$property} = $value;
 
         return $this;
     }
