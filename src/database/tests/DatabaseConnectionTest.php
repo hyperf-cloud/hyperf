@@ -316,7 +316,7 @@ class DatabaseConnectionTest extends TestCase
         $pdo->expects($this->exactly(3))->method('rollBack');
         $pdo->expects($this->never())->method('commit');
         $mock->transaction(function () {
-            throw new QueryException('', [], new Exception('Deadlock found when trying to get lock'));
+            throw new QueryException('', '', [], new Exception('Deadlock found when trying to get lock'));
         }, 3);
     }
 
@@ -385,7 +385,7 @@ class DatabaseConnectionTest extends TestCase
 
         $method->invokeArgs($mock, [
             '', [], function () {
-                throw new QueryException('', [], new Exception());
+                throw new QueryException('', '', [], new Exception());
             },
         ]);
     }
@@ -405,7 +405,7 @@ class DatabaseConnectionTest extends TestCase
 
         $method->invokeArgs($mock, [
             '', [], function () {
-                throw new QueryException('', [], new Exception());
+                throw new QueryException('', '', [], new Exception());
             },
         ]);
     }

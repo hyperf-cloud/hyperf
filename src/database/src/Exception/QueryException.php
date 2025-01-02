@@ -26,8 +26,12 @@ class QueryException extends PDOException
      * @param string $sql the SQL for the query
      * @param array $bindings the bindings for the query
      */
-    public function __construct(protected string $sql, protected array $bindings, Exception $previous)
-    {
+    public function __construct(
+        public ?string $connectionName,
+        protected string $sql,
+        protected array $bindings,
+        Exception $previous
+    ) {
         parent::__construct('', 0, $previous);
 
         $this->code = $previous->getCode();
