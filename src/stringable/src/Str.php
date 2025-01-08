@@ -360,9 +360,10 @@ class Str
      *
      * @param array|string $pattern
      * @param string $value
+     * @param bool $ignoreCase
      * @return bool
      */
-    public static function is($pattern, $value)
+    public static function is($pattern, $value, $ignoreCase = false)
     {
         $value = (string) $value;
 
@@ -389,7 +390,7 @@ class Str
             // pattern such as "library/*", making any string check convenient.
             $pattern = str_replace('\*', '.*', $pattern);
 
-            if (preg_match('#^' . $pattern . '\z#u', $value) === 1) {
+            if (preg_match('#^' . $pattern . '\z#' . ($ignoreCase ? 'iu' : 'u'), $value) === 1) {
                 return true;
             }
         }

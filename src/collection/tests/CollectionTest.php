@@ -170,7 +170,7 @@ class CollectionTest extends TestCase
 
     public function testHasAny(): void
     {
-        $col = new Collection(['id' => 1, 'first' => 'Hello', 'second' => 'World']);
+        $col = new Collection(['id' => 1, 'first' => 'Hello', 'second' => 'World', 'null' => null]);
 
         $this->assertTrue($col->hasAny('first'));
         $this->assertFalse($col->hasAny('third'));
@@ -178,6 +178,7 @@ class CollectionTest extends TestCase
         $this->assertTrue($col->hasAny(['first', 'fourth']));
         $this->assertFalse($col->hasAny(['third', 'fourth']));
         $this->assertFalse($col->hasAny('third', 'fourth'));
+        $this->assertFalse($col->hasAny('null'));
         $this->assertFalse($col->hasAny([]));
     }
 

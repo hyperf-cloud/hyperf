@@ -183,6 +183,46 @@ class StringableTest extends TestCase
         $this->assertSame('...is a beautiful morn...', (string) $this->stringable('This is a beautiful morning')->excerpt('beautiful', ['radius' => 5]));
     }
 
+    public function testIs()
+    {
+        $this->assertTrue($this->stringable('/')->is('/'));
+        $this->assertFalse($this->stringable('/')->is(' /'));
+        $this->assertFalse($this->stringable('/a')->is('/'));
+        $this->assertTrue($this->stringable('foo/bar/baz')->is('foo/*'));
+
+        $this->assertTrue($this->stringable('App\Class@method')->is('*@*'));
+        $this->assertTrue($this->stringable('app\Class@')->is('*@*'));
+        $this->assertTrue($this->stringable('@method')->is('*@*'));
+
+        // is case sensitive
+        $this->assertFalse($this->stringable('foo/bar/baz')->is('*BAZ*'));
+        $this->assertFalse($this->stringable('foo/bar/baz')->is('*FOO*'));
+        $this->assertFalse($this->stringable('a')->is('A'));
+
+        // is not case sensitive
+        $this->assertTrue($this->stringable('a')->is('A', true));
+        $this->assertTrue($this->stringable('foo/bar/baz')->is('*BAZ*', true));
+        $this->assertTrue($this->stringable('a/')->is(['A*', 'B*'], true));
+        $this->assertFalse($this->stringable('f/')->is(['A*', 'B*'], true));
+        $this->assertTrue($this->stringable('foo')->is('FOO', true));
+        $this->assertTrue($this->stringable('foo/bar/baz')->is('*FOO*', true));
+        $this->assertTrue($this->stringable('FOO/bar')->is('foo/*', true));
+
+        // Accepts array of patterns
+        $this->assertTrue($this->stringable('a/')->is(['a*', 'b*']));
+        $this->assertTrue($this->stringable('b/')->is(['a*', 'b*']));
+        $this->assertFalse($this->stringable('f/')->is(['a*', 'b*']));
+
+        // numeric values and patterns
+        $this->assertFalse($this->stringable(123)->is(['a*', 'b*']));
+        $this->assertTrue($this->stringable(11211)->is(['*2*', 'b*']));
+
+        $this->assertTrue($this->stringable('blah/baz/foo')->is('*/foo'));
+
+        // empty patterns
+        $this->assertFalse($this->stringable('test')->is([]));
+    }
+
     public function testIsAscii()
     {
         $this->assertTrue($this->stringable('Hello World!')->isAscii());

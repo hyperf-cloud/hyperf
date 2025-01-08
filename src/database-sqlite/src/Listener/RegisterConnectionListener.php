@@ -54,7 +54,7 @@ class RegisterConnectionListener implements ListenerInterface
         return function () use ($config, $connection) {
             /** @var \Hyperf\Contract\ContainerInterface $container */
             $container = ApplicationContext::getContainer();
-            $key = "sqlite.presistent.pdo.{$config['name']}";
+            $key = "sqlite.persistent.pdo.{$config['name']}";
 
             if (! $container->has($key)) {
                 $container->set($key, call_user_func($connection));
