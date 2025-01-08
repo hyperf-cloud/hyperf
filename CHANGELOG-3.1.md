@@ -10,6 +10,7 @@
 
 ## Optimized
 
+- [#7217](https://github.com/hyperf/hyperf/pull/7217) Improved `hasAny` using `array_key_exists`.
 - [#7227](https://github.com/hyperf/hyperf/pull/7227) Improves phpstan docs for `Hyperf\Support\SafeCaller`.
 
 # v3.1.49 - 2024-12-17
