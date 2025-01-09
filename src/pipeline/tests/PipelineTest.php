@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace HyperfTest\Pipeline;
 
+use Exception;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Pipeline\Pipeline;
 use HyperfTest\Pipeline\Stub\FooPipeline;
@@ -19,6 +20,7 @@ use Mockery;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use stdClass;
 
 /**
  * @internal
@@ -219,7 +221,7 @@ class PipelineTest extends TestCase
             $next($piped);
         };
 
-        $result = (new Pipeline(new Container()))
+        $result = (new Pipeline($this->getContainer()))
             ->send('foo')
             ->through([PipelineTestPipeOne::class, $pipeTwo])
             ->finally(function ($piped) {
@@ -243,7 +245,7 @@ class PipelineTest extends TestCase
             $_SERVER['__test.pipe.two'] = $piped;
         };
 
-        $result = (new Pipeline(new Container()))
+        $result = (new Pipeline($this->getContainer()))
             ->send('foo')
             ->through([PipelineTestPipeOne::class, $pipeTwo])
             ->finally(function ($piped) {
@@ -265,7 +267,7 @@ class PipelineTest extends TestCase
     {
         $std = new stdClass();
 
-        $result = (new Pipeline(new Container()))
+        $result = (new Pipeline($this->getContainer()))
             ->send($std)
             ->through([
                 function ($std, $next) {
@@ -300,7 +302,7 @@ class PipelineTest extends TestCase
         $this->expectExceptionMessage('My Exception: 1');
 
         try {
-            (new Pipeline(new Container()))
+            (new Pipeline($this->getContainer()))
                 ->send($std)
                 ->through([
                     function ($std, $next) {
@@ -320,7 +322,7 @@ class PipelineTest extends TestCase
 
                     return $std;
                 });
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->assertSame('My Exception: 1', $e->getMessage());
             $this->assertSame(2, $std->value);
 
