@@ -211,37 +211,6 @@ class PipelineTest extends TestCase
         $this->assertSame($id + 6, $result);
     }
 
-    protected function getContainer()
-    {
-        $container = Mockery::mock(ContainerInterface::class);
-        ApplicationContext::setContainer($container);
-        $container->shouldReceive('get')->with(PipelineTestPipeOne::class)->andReturn(new PipelineTestPipeOne());
-        $container->shouldReceive('get')->with(PipelineTestPipeTwo::class)->andReturn(new PipelineTestPipeTwo());
-        $container->shouldReceive('get')->with(PipelineTestParameterPipe::class)->andReturn(new PipelineTestParameterPipe());
-
-        return $container;
-    }
-}
-
-class PipelineTestPipeOne
-{
-    public function handle($piped, $next)
-    {
-        $_SERVER['__test.pipe.one'] = $piped;
-
-        return $next($piped);
-    }
-
-    public function differentMethod($piped, $next)
-    {
-        return $next($piped);
-    }
-
-    public function incr($piped, $next)
-    {
-        return $next(++$piped);
-    }
-
     public function testPipelineFinally()
     {
         $pipeTwo = function ($piped, $next) {
@@ -357,6 +326,37 @@ class PipelineTestPipeOne
 
             throw $e;
         }
+    }
+
+    protected function getContainer()
+    {
+        $container = Mockery::mock(ContainerInterface::class);
+        ApplicationContext::setContainer($container);
+        $container->shouldReceive('get')->with(PipelineTestPipeOne::class)->andReturn(new PipelineTestPipeOne());
+        $container->shouldReceive('get')->with(PipelineTestPipeTwo::class)->andReturn(new PipelineTestPipeTwo());
+        $container->shouldReceive('get')->with(PipelineTestParameterPipe::class)->andReturn(new PipelineTestParameterPipe());
+
+        return $container;
+    }
+}
+
+class PipelineTestPipeOne
+{
+    public function handle($piped, $next)
+    {
+        $_SERVER['__test.pipe.one'] = $piped;
+
+        return $next($piped);
+    }
+
+    public function differentMethod($piped, $next)
+    {
+        return $next($piped);
+    }
+
+    public function incr($piped, $next)
+    {
+        return $next(++$piped);
     }
 }
 
