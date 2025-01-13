@@ -1147,7 +1147,7 @@ class CollectionTest extends TestCase
                 ['id' => 1, 'name' => 'a'],
             ]
         ))->sortBy(['id', 'asc']);
-        $this->assertEquals((string) $data->values(), (string) $dataMany);
+        $this->assertEquals((string) $data, (string) $dataMany);
 
         $data = (new $collection(
             [
@@ -1174,7 +1174,7 @@ class CollectionTest extends TestCase
                 ['id' => 1, 'name' => '1e'],
             ]
         ))->sortBy([['name', 'asc']], SORT_NUMERIC);
-        $this->assertEquals((string) $data->values(), (string) $dataMany);
+        $this->assertEquals((string) $data, (string) $dataMany);
 
         $data = (new $collection(
             [
@@ -1201,7 +1201,7 @@ class CollectionTest extends TestCase
                 ['id' => 1, 'name' => '1e'],
             ]
         ))->sortBy([['name', 'asc']], SORT_STRING);
-        $this->assertEquals((string) $data->values(), (string) $dataMany);
+        $this->assertEquals((string) $data, (string) $dataMany);
 
         $data = (new $collection(
             [
@@ -1228,7 +1228,7 @@ class CollectionTest extends TestCase
                 ['id' => 1, 'name' => 'a1'],
             ]
         ))->sortBy([['name', 'asc']], SORT_NATURAL);
-        $this->assertEquals((string) $data->values(), (string) $dataMany);
+        $this->assertEquals((string) $data, (string) $dataMany);
 
         setlocale(LC_COLLATE, 'en_US.utf8');
         $data = (new $collection(
@@ -1256,7 +1256,7 @@ class CollectionTest extends TestCase
                 ['id' => 1, 'name' => 'c'],
             ]
         ))->sortBy([['name', 'asc']], SORT_LOCALE_STRING);
-        $this->assertEquals((string) $data->values(), (string) $dataMany);
+        $this->assertEquals((string) $data, (string) $dataMany);
 
         $data = (new $collection(
             [
@@ -1290,7 +1290,7 @@ class CollectionTest extends TestCase
                 ['id' => 5, 'name' => 'e'],
             ]
         ))->sortByDesc(['id']);
-        $this->assertEquals((string) $data->values(), (string) $dataMany);
+        $this->assertEquals((string) $data, (string) $dataMany);
 
         $dataMany = (new $collection(
             [
