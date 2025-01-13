@@ -18,6 +18,7 @@ use Swoole\ExitException;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
@@ -115,6 +116,16 @@ abstract class Command extends SymfonyCommand
         $arguments['command'] = $command;
 
         return $this->getApplication()->find($command)->run($this->createInputFromArguments($arguments), $this->output);
+    }
+
+    /**
+     * Call another console command without output.
+     */
+    public function callSilently(string $command, array $arguments = []): int
+    {
+        $arguments['command'] = $command;
+
+        return $this->getApplication()->find($command)->run($this->createInputFromArguments($arguments), new NullOutput());
     }
 
     /**
