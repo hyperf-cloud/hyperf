@@ -18,6 +18,7 @@ use Hyperf\Context\ResponseContext;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\MiddlewareInitializerInterface;
 use Hyperf\Contract\OnRequestInterface;
+use Hyperf\Contract\ResponseEmitterInterface;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Dispatcher\HttpDispatcher;
@@ -62,7 +63,7 @@ class Server implements OnRequestInterface, MiddlewareInitializerInterface
         protected ContainerInterface $container,
         protected HttpDispatcher $dispatcher,
         protected ExceptionHandlerDispatcher $exceptionHandlerDispatcher,
-        protected ResponseEmitter $responseEmitter
+        protected ResponseEmitterInterface $responseEmitter
     ) {
         if ($this->container->has(EventDispatcherInterface::class)) {
             $this->event = $this->container->get(EventDispatcherInterface::class);

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Hyperf\HttpServer;
 
+use Hyperf\Contract\ResponseEmitterInterface;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,6 +26,8 @@ class ConfigProvider
                 RequestInterface::class => Request::class,
                 ResponseInterface::class => Response::class,
                 ServerRequestInterface::class => Request::class,
+                // TODO: 需要同步修改 engine-swow 中的映射关系
+                ResponseEmitterInterface::class => ResponseEmitter::class,
             ],
         ];
     }
