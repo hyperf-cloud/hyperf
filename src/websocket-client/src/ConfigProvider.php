@@ -11,12 +11,21 @@ declare(strict_types=1);
  */
 
 namespace Hyperf\WebSocketClient;
-
 class ConfigProvider
 {
     public function __invoke(): array
     {
         return [
+            'dependencies' => [
+
+            ],
+            'publish' => [
+                [
+                    'id' => 'config',
+                    'path' => __DIR__ . '/../publish/websocket_client.php',
+                    'source' => 'websocket_client',
+                ],
+            ],
         ];
     }
 }

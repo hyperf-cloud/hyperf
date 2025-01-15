@@ -1,85 +1,37 @@
 <?php
-
 declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
-
 namespace Hyperf\WebSocketClient;
 
-use Hyperf\HttpMessage\Server\Response;
-use Hyperf\WebSocketClient\Exception\ConnectException;
-use Psr\Http\Message\UriInterface;
-use Swoole\Coroutine;
-use Swoole\WebSocket\Frame as SwFrame;
+use Hyperf\HttpMessage\Uri\Uri;
 
-class Client
+abstract class Client implements ClientInterface
 {
-    protected Coroutine\Http\Client $client;
+    protected array $headers = [];
 
-    public function __construct(protected UriInterface $uri, array $headers = [])
+    public function __construct(protected Uri $uri, array $headers = [])
     {
-        $host = $uri->getHost();
-        $port = $uri->getPort();
-        $ssl = $uri->getScheme() === 'wss';
+        $this->headers = $headers;
+    }
 
-        if (empty($port)) {
-            $port = $ssl ? 443 : 80;
+    public function connect(string $path = '/'): bool
+    {
+        if ($query = $this->uri->getQuery()) {
+            $path .= '?' . $query;
         }
-
-        $this->client = new Coroutine\Http\Client($host, $port, $ssl);
-        $headers && $this->client->setHeaders($headers);
-        parse_str($this->uri->getQuery(), $query);
-
-        $query = http_build_query($query);
-
-        $path = $this->uri->getPath() ?: '/';
-        $path = empty($query) ? $path : $path . '?' . $query;
-
-        $ret = $this->client->upgrade($path);
-        if (! $ret) {
-            if ($this->client->errCode !== 0) {
-                $errCode = $this->client->errCode;
-                $errMsg = $this->client->errMsg;
-            } else {
-                $errCode = $this->client->statusCode;
-                $errMsg = Response::getReasonPhraseByCode($errCode);
-            }
-
-            throw new ConnectException(sprintf('Websocket upgrade failed by [%s] [%s].', $errCode, $errMsg));
-        }
+        return $this->connectInternal($path);
     }
 
-    public function __destruct()
+    public function recv(float $timeout = -1): Frame
     {
-        $this->close();
+        return $this->recvInternal($timeout);
     }
 
-    public function recv(float $timeout = -1)
+    public function setHeaders(array $headers): static
     {
-        $ret = $this->client->recv($timeout);
-        if ($ret instanceof SwFrame) {
-            return new Frame($ret);
-        }
-
-        return $ret;
+        $this->headers = $headers;
+        return $this;
     }
 
-    /**
-     * @param int $flags SWOOLE_WEBSOCKET_FLAG_FIN or SWOOLE_WEBSOCKET_FLAG_COMPRESS
-     */
-    public function push(string $data, int $opcode = WEBSOCKET_OPCODE_TEXT, ?int $flags = null): bool
-    {
-        return $this->client->push($data, $opcode, $flags);
-    }
-
-    public function close(): bool
-    {
-        return $this->client->close();
-    }
+    abstract protected function connectInternal(string $path): bool;
+    abstract protected function recvInternal(float $timeout = -1): Frame;
 }

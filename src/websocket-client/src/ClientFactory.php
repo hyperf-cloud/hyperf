@@ -1,31 +1,26 @@
 <?php
-
 declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
-
 namespace Hyperf\WebSocketClient;
 
+use Hyperf\Contract\ContainerInterface;
 use Hyperf\HttpMessage\Uri\Uri;
 use Hyperf\Stringable\Str;
-
-use function Hyperf\Coroutine\defer;
 use function Hyperf\Support\make;
+use function Hyperf\Coroutine\defer;
 
 class ClientFactory
 {
-    public function create(string $uri, bool $autoClose = true, array $headers = []): Client
+    public function __construct(protected ContainerInterface $container)
+    {
+    }
+
+    public function create(string $uri, bool $autoClose = true, array $headers = []): ClientInterface
     {
         if (! Str::startsWith($uri, ['ws://', 'wss://'])) {
             $uri = 'ws://' . $uri;
         }
-        $client = make(Client::class, ['uri' => new Uri($uri), 'headers' => $headers]);
+        /** @var ClientInterface $client */
+        $client = make(ClientInterface::class, ['uri' => new Uri($uri), 'headers' => $headers]);
         if ($autoClose) {
             defer(function () use ($client) {
                 $client->close();
