@@ -459,6 +459,29 @@ class FooController extends Controller
 }
 ```
 
+#### 不同場景下同名引數
+
+在兩個介面下定義相同的引數名是比較常見的，但此時不同場景的引數驗證要求可能不相同，我們需要區分定義，可以嘗試以下示例
+
+```php
+public function rules(): array
+{
+    return [
+        'foo' => ['username'],
+        'bar' => $this->ruleBar()
+    ];
+}
+
+protected function ruleBar()
+{
+    return match ($this->getScene()) {
+        'delete' => 'bail|json|required',
+        'batch-delete' => 'bail|json',
+        default => 'bail|required|json',
+    };
+}
+```
+
 ## 驗證規則
 
 下面是有效規則及其函式列表：
@@ -522,7 +545,7 @@ class FooController extends Controller
 'username' => 'alpha_num:ascii',
 ```
 
-#### ascii
+##### ascii
 
 正在驗證的欄位必須完全是 7 位的 ASCII 字元。
 

@@ -449,6 +449,29 @@ class FooController extends Controller
 }
 ```
 
+#### Parameters of the same name in different scenarios
+
+It is common to define the same parameter name under both interfaces, but at this point different scenarios may require different parameter validation requirements, we need to distinguish between definitions, you can try the following example
+
+```php
+public function rules(): array
+{
+    return [
+        'foo' => 'bail|required',
+        'bar' => $this->ruleBar()
+    ];
+}
+
+protected function ruleBar()
+{
+    return match ($this->getScene()) {
+        'delete' => 'bail|json|required',
+        'batch-delete' => 'bail|json',
+        default => 'bail|required|json',
+    };
+}
+```
+
 ## Validation rules
 
 The following is a list of valid rules and their functions:
@@ -490,6 +513,10 @@ The validation field can contain letters (including Chinese) and numbers, as wel
 ##### alpha_num
 
 The validation field must be letters (including Chinese) or numbers.
+
+##### ascii
+
+The field being validated must be exactly 7-bit ASCII characters.
 
 ##### array
 

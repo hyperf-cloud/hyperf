@@ -459,6 +459,29 @@ class FooController extends Controller
 }
 ```
 
+#### 不同场景下同名参数
+
+在两个接口下定义相同的参数名是比较常见的，但此时不同场景的参数验证要求可能不相同，我们需要区分定义，可以尝试以下示例
+
+```php
+public function rules(): array
+{
+    return [
+        'foo' => ['username'],
+        'bar' => $this->ruleBar()
+    ];
+}
+
+protected function ruleBar()
+{
+    return match ($this->getScene()) {
+        'delete' => 'bail|json|required',
+        'batch-delete' => 'bail|json',
+        default => 'bail|required|json',
+    };
+}
+```
+
 ## 验证规则
 
 下面是有效规则及其函数列表：
@@ -522,7 +545,7 @@ class FooController extends Controller
 'username' => 'alpha_num:ascii',
 ```
 
-#### ascii
+##### ascii
 
 正在验证的字段必须完全是 7 位的 ASCII 字符。
 
