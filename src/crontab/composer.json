@@ -22,7 +22,7 @@
         "hyperf/support": "~3.1.0",
         "hyperf/tappable": "~3.1.0",
         "hyperf/utils": "~3.1.0",
-        "nesbot/carbon": "^2.0"
+        "nesbot/carbon": "^3.0"
     },
     "suggest": {
         "hyperf/command": "Required to use command trigger.",

@@ -13,7 +13,7 @@
         "hyperf/contract": "~3.1.0",
         "hyperf/event": "~3.1.0",
         "hyperf/framework": "~3.1.0",
-        "nesbot/carbon": "^2.0"
+        "nesbot/carbon": "^3.0"
     },
     "suggest": {
         "ramsey/uuid": "Required to use \\Ramsey\\Uuid\\Uuid (^4.7).",
