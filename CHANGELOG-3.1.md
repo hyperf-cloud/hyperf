@@ -784,3 +784,4 @@
 
 - `Hyperf\DB\PgSQL\PgSQLConnection::str_replace_once` will be deprecated, please use `Hyperf\DB\PgSQL\PgSQLConnection::strReplaceOnce` instead.
 - `Hyperf\Database\PgSQL\PostgreSqlSwooleExtConnection::str_replace_once` will be deprecated, please use `Hyperf\Database\PgSQL\PostgreSqlSwooleExtConnection::strReplaceOnce` instead.
+- Upgraded `doctrine/dbal` to `^4.2`;

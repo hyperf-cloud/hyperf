@@ -179,7 +179,7 @@ class Builder
     {
         $table = $this->connection->getTablePrefix() . $table;
 
-        return $this->connection->getDoctrineColumn($table, $column)->getType()->getName();
+        return $this->connection->getDoctrineColumn($table, $column)->getType();
     }
 
     /**

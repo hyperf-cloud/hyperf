@@ -14,7 +14,6 @@ namespace Hyperf\Database\Schema\Grammars;
 
 use Doctrine\DBAL\Schema\AbstractSchemaManager as SchemaManager;
 use Doctrine\DBAL\Schema\Column;
-use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\DBAL\Types\Type;
@@ -43,11 +42,11 @@ class ChangeColumn
         $tableDiff = static::getChangedDiff(
             $grammar,
             $blueprint,
-            $schema = $connection->getDoctrineSchemaManager()
+            $connection->getDoctrineSchemaManager()
         );
 
         if ($tableDiff !== false) {
-            return (array) $schema->getDatabasePlatform()->getAlterTableSQL($tableDiff);
+            return $connection->getDoctrineConnection()->getDatabasePlatform()->getAlterTableSQL($tableDiff);
         }
 
         return [];
@@ -61,9 +60,9 @@ class ChangeColumn
      */
     protected static function getChangedDiff($grammar, Blueprint $blueprint, SchemaManager $schema)
     {
-        $current = $schema->listTableDetails($grammar->getTablePrefix() . $blueprint->getTable());
+        $current = $schema->introspectTable($grammar->getTablePrefix() . $blueprint->getTable());
 
-        return (new Comparator())->diffTable(
+        return $schema->createComparator()->compareTables(
             $current,
             static::getTableWithColumnChanges($blueprint, $current)
         );
@@ -103,7 +102,7 @@ class ChangeColumn
      */
     protected static function getDoctrineColumn(Table $table, Fluent $fluent)
     {
-        return $table->changeColumn(
+        return $table->modifyColumn(
             $fluent['name'],
             static::getDoctrineColumnChangeOptions($fluent)
         )->getColumn($fluent['name']);
@@ -217,7 +216,7 @@ class ChangeColumn
         switch ($attribute) {
             case 'type':
             case 'name':
-                return;
+                return null;
             case 'nullable':
                 return 'notnull';
             case 'total':
