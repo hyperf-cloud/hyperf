@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace HyperfTest\Pipeline;
 
+use Exception;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Pipeline\Pipeline;
 use HyperfTest\Pipeline\Stub\FooPipeline;
@@ -19,6 +20,7 @@ use Mockery;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use stdClass;
 
 /**
  * @internal
@@ -209,6 +211,123 @@ class PipelineTest extends TestCase
             });
 
         $this->assertSame($id + 6, $result);
+    }
+
+    public function testPipelineFinally()
+    {
+        $pipeTwo = function ($piped, $next) {
+            $_SERVER['__test.pipe.two'] = $piped;
+
+            $next($piped);
+        };
+
+        $result = (new Pipeline($this->getContainer()))
+            ->send('foo')
+            ->through([PipelineTestPipeOne::class, $pipeTwo])
+            ->finally(function ($piped) {
+                $_SERVER['__test.pipe.finally'] = $piped;
+            })
+            ->then(function ($piped) {
+                return $piped;
+            });
+
+        $this->assertSame(null, $result);
+        $this->assertSame('foo', $_SERVER['__test.pipe.one']);
+        $this->assertSame('foo', $_SERVER['__test.pipe.two']);
+        $this->assertSame('foo', $_SERVER['__test.pipe.finally']);
+
+        unset($_SERVER['__test.pipe.one'], $_SERVER['__test.pipe.two'], $_SERVER['__test.pipe.finally']);
+    }
+
+    public function testPipelineFinallyMethodWhenChainIsStopped()
+    {
+        $pipeTwo = function ($piped) {
+            $_SERVER['__test.pipe.two'] = $piped;
+        };
+
+        $result = (new Pipeline($this->getContainer()))
+            ->send('foo')
+            ->through([PipelineTestPipeOne::class, $pipeTwo])
+            ->finally(function ($piped) {
+                $_SERVER['__test.pipe.finally'] = $piped;
+            })
+            ->then(function ($piped) {
+                return $piped;
+            });
+
+        $this->assertSame(null, $result);
+        $this->assertSame('foo', $_SERVER['__test.pipe.one']);
+        $this->assertSame('foo', $_SERVER['__test.pipe.two']);
+        $this->assertSame('foo', $_SERVER['__test.pipe.finally']);
+
+        unset($_SERVER['__test.pipe.one'], $_SERVER['__test.pipe.two'], $_SERVER['__test.pipe.finally']);
+    }
+
+    public function testPipelineFinallyOrder()
+    {
+        $std = new stdClass();
+
+        $result = (new Pipeline($this->getContainer()))
+            ->send($std)
+            ->through([
+                function ($std, $next) {
+                    $std->value = 1;
+
+                    return $next($std);
+                },
+                function ($std, $next) {
+                    ++$std->value;
+
+                    return $next($std);
+                },
+            ])->finally(function ($std) {
+                $this->assertSame(3, $std->value);
+
+                ++$std->value;
+            })->then(function ($std) {
+                ++$std->value;
+
+                return $std;
+            });
+
+        $this->assertSame(4, $std->value);
+        $this->assertSame(4, $result->value);
+    }
+
+    public function testPipelineFinallyWhenExceptionOccurs()
+    {
+        $std = new stdClass();
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('My Exception: 1');
+
+        try {
+            (new Pipeline($this->getContainer()))
+                ->send($std)
+                ->through([
+                    function ($std, $next) {
+                        $std->value = 1;
+
+                        return $next($std);
+                    },
+                    function ($std) {
+                        throw new Exception('My Exception: ' . $std->value);
+                    },
+                ])->finally(function ($std) {
+                    $this->assertSame(1, $std->value);
+
+                    ++$std->value;
+                })->then(function ($std) {
+                    $std->value = 0;
+
+                    return $std;
+                });
+        } catch (Exception $e) {
+            $this->assertSame('My Exception: 1', $e->getMessage());
+            $this->assertSame(2, $std->value);
+
+            throw $e;
+        }
     }
 
     protected function getContainer()
