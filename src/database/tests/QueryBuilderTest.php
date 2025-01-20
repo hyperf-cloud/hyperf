@@ -3125,6 +3125,38 @@ class QueryBuilderTest extends TestCase
         $this->assertTrue(call_user_func($call, '!'));
     }
 
+    public function testExistsOr()
+    {
+        $builder = $this->getBuilder();
+        $builder->getConnection()->shouldReceive('select')->andReturn([['exists' => 1]]);
+        $results = $builder->from('users')->doesntExistOr(function () {
+            return 123;
+        });
+        $this->assertSame(123, $results);
+        $builder = $this->getBuilder();
+        $builder->getConnection()->shouldReceive('select')->andReturn([['exists' => 0]]);
+        $results = $builder->from('users')->doesntExistOr(function () {
+            throw new RuntimeException();
+        });
+        $this->assertTrue($results);
+    }
+
+    public function testDoesntExistsOr()
+    {
+        $builder = $this->getBuilder();
+        $builder->getConnection()->shouldReceive('select')->andReturn([['exists' => 0]]);
+        $results = $builder->from('users')->existsOr(function () {
+            return 123;
+        });
+        $this->assertSame(123, $results);
+        $builder = $this->getBuilder();
+        $builder->getConnection()->shouldReceive('select')->andReturn([['exists' => 1]]);
+        $results = $builder->from('users')->existsOr(function () {
+            throw new RuntimeException();
+        });
+        $this->assertTrue($results);
+    }
+
     protected function getBuilderWithProcessor(): Builder
     {
         return new Builder(Mockery::mock(ConnectionInterface::class), new Grammar(), new Processor());
