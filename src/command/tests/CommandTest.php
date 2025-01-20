@@ -18,6 +18,7 @@ use HyperfTest\Command\Command\DefaultSwooleFlagsCommand;
 use HyperfTest\Command\Command\FooCommand;
 use HyperfTest\Command\Command\FooExceptionCommand;
 use HyperfTest\Command\Command\FooExitCommand;
+use HyperfTest\Command\Command\FooProhibitableCommand;
 use HyperfTest\Command\Command\FooTraitCommand;
 use HyperfTest\Command\Command\SwooleFlagsCommand;
 use HyperfTest\Command\Command\Traits\Foo;
@@ -100,5 +101,32 @@ class CommandTest extends TestCase
     public function testExitCodeWhenThrowExceptionInCoroutine()
     {
         $this->testExitCodeWhenThrowException();
+    }
+
+    public function testProhibitableCommand()
+    {
+        $application = Mockery::mock(ConsoleApplication::class);
+        $application->shouldReceive('getHelperSet');
+
+        $output = Mockery::mock(OutputInterface::class);
+        $command = new ClassInvoker(new FooProhibitableCommand());
+        $command->setApplication($application);
+        $command->setOutput($output);
+        $input = Mockery::mock(InputInterface::class);
+        $input->shouldReceive('getOption')->andReturnFalse();
+        $result = $command->execute($input, $output);
+        $this->assertSame(FooProhibitableCommand::SUCCESS, $result);
+
+        FooProhibitableCommand::prohibit(true);
+
+        $output = Mockery::mock(OutputInterface::class);
+        $output->shouldReceive('warn')->andReturn();
+        $command = new ClassInvoker(new FooProhibitableCommand());
+        $command->setApplication($application);
+        $command->setOutput($output);
+        $input = Mockery::mock(InputInterface::class);
+        $input->shouldReceive('getOption')->andReturnFalse();
+        $result = $command->execute($input, $output);
+        $this->assertSame(FooProhibitableCommand::FAILURE, $result);
     }
 }
