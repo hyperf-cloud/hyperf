@@ -85,6 +85,7 @@ class DatabaseIntegrationTest extends TestCase
     {
         foreach (['default', 'second_connection'] as $connection) {
             $this->schema($connection)->drop('users');
+            $this->schema($connection)->drop('unique_users');
             $this->schema($connection)->drop('friends');
             $this->schema($connection)->drop('posts');
         }
@@ -128,13 +129,42 @@ class DatabaseIntegrationTest extends TestCase
         $this->assertTrue($user2->exists);
         $this->assertSame('second_connection', $user1->getConnectionName());
         $this->assertSame('second_connection', $user2->getConnectionName());
-
         $this->assertEquals(1, ModelTestUser::on('second_connection')->count());
+
         $user1 = ModelTestUser::on('second_connection')->firstOrCreate(['email' => 'taylorotwell@gmail.com']);
         $user2 = ModelTestUser::on('second_connection')->firstOrCreate(['email' => 'themsaid@gmail.com']);
         $this->assertSame('second_connection', $user1->getConnectionName());
         $this->assertSame('second_connection', $user2->getConnectionName());
         $this->assertEquals(2, ModelTestUser::on('second_connection')->count());
+    }
+
+    public function testCreateOrFirst(): void
+    {
+        $user1 = ModelTestUniqueUser::createOrFirst(['email' => 'taylorotwell@gmail.com']);
+        $this->assertSame('taylorotwell@gmail.com', $user1->email);
+
+        $user2 = ModelTestUniqueUser::createOrFirst(
+            ['email' => 'taylorotwell@gmail.com'],
+            ['name' => 'Taylor Otwell']
+        );
+        $this->assertEquals($user1->id, $user2->id);
+        $this->assertSame('taylorotwell@gmail.com', $user2->email);
+        $this->assertNull($user2->name);
+
+        $user3 = ModelTestUniqueUser::createOrFirst(
+            ['email' => 'abigailotwell@gmail.com'],
+            ['name' => 'Abigail Otwell']
+        );
+        $this->assertNotEquals($user3->id, $user1->id);
+        $this->assertSame('abigailotwell@gmail.com', $user3->email);
+        $this->assertSame('Abigail Otwell', $user3->name);
+
+        $user4 = ModelTestUniqueUser::createOrFirst(
+            ['name' => 'Dries Vints'],
+            ['name' => 'Nuno Maduro', 'email' => 'nuno@laravel.com']
+        );
+
+        $this->assertSame('Nuno Maduro', $user4->name);
     }
 
     public function testWithWhereHasOnNestedSelfReferencingBelongsToManyRelationship()
@@ -245,7 +275,13 @@ class DatabaseIntegrationTest extends TestCase
                 $table->timestamp('birthday')->nullable();
                 $table->timestamps();
             });
-
+            $this->schema($connection)->create('unique_users', function ($table) {
+                $table->increments('id');
+                $table->string('name')->nullable();
+                $table->string('email')->unique();
+                $table->timestamp('birthday', 6)->nullable();
+                $table->timestamps();
+            });
             $this->schema($connection)->create('friends', function ($table) {
                 $table->integer('user_id');
                 $table->integer('friend_id');
@@ -284,6 +320,15 @@ class ModelTestUser extends Model
     {
         return $this->belongsToMany(self::class, 'friends', 'user_id', 'friend_id');
     }
+}
+
+class ModelTestUniqueUser extends Model
+{
+    protected ?string $table = 'unique_users';
+
+    protected array $casts = ['birthday' => 'datetime'];
+
+    protected array $guarded = [];
 }
 
 class ModelTestPost extends Model

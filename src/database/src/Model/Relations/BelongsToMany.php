@@ -14,6 +14,7 @@ namespace Hyperf\Database\Model\Relations;
 
 use Hyperf\Contract\LengthAwarePaginatorInterface;
 use Hyperf\Contract\PaginatorInterface;
+use Hyperf\Database\Exception\UniqueConstraintViolationException;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Collection;
 use Hyperf\Database\Model\Model;
@@ -389,7 +390,7 @@ class BelongsToMany extends Relation
     }
 
     /**
-     * Get the first related record matching the attributes or create it.
+     * Get the first related record matching the attributes. If the record is not found, create it.
      *
      * @param bool $touch
      * @return Model
@@ -401,6 +402,29 @@ class BelongsToMany extends Relation
         }
 
         return $instance;
+    }
+
+    /**
+     * Attempt to create the record. If a unique constraint violation occurs, attempt to find the matching record.
+     *
+     * @param bool $touch
+     * @return Model
+     */
+    public function createOrFirst(array $attributes = [], array $values = [], array $joining = [], $touch = true)
+    {
+        try {
+            return $this->create(array_merge($attributes, $values), $joining, $touch);
+        } catch (UniqueConstraintViolationException $exception) {
+            // ...
+        }
+
+        try {
+            return tap($this->related->where($attributes)->first(), function ($instance) use ($joining, $touch) {
+                $this->attach($instance, $joining, $touch);
+            });
+        } catch (UniqueConstraintViolationException $exception) {
+            return (clone $this)->where($attributes)->first();
+        }
     }
 
     /**
