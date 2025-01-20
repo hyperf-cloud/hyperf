@@ -104,7 +104,9 @@ class Connector
      */
     protected function createPdoConnection($dsn, $username, $password, $options)
     {
-        return new PDO($dsn, $username, $password, $options);
+        return PHP_VERSION_ID < 80400
+            ? new PDO($dsn, $username, $password, $options)
+            : PDO::connect($dsn, $username, $password, $options); /* @phpstan-ignore staticMethod.notFound (PHP 8.4) */
     }
 
     /**
