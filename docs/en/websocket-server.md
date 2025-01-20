@@ -237,3 +237,50 @@ class ServerController
 }
 
 ```
+
+
+## Handle Http Request in Websocket Server
+
+In addition to separating HTTP services and WebSocket services through ports, we can also listen for HTTP requests in WebSocket.
+
+Because `server.servers.*.callbacks` configuration items are all singleton，so we need define a new singleton config in `dependencies`.
+
+```php
+<?php
+return [
+    'HttpServer' => Hyperf\HttpServer\Server::class,
+];
+```
+
+Then modify the `callbacks` configuration in our `WebSocket` service. The following hides irrelevant configurations
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Hyperf\Server\Event;
+use Hyperf\Server\Server;
+
+return [
+    'mode' => SWOOLE_BASE,
+    'servers' => [
+        [
+            'name' => 'ws',
+            'type' => Server::SERVER_WEBSOCKET,
+            'host' => '0.0.0.0',
+            'port' => 9502,
+            'sock_type' => SWOOLE_SOCK_TCP,
+            'callbacks' => [
+                Event::ON_REQUEST => ['HttpServer', 'onRequest'],
+                Event::ON_HAND_SHAKE => [Hyperf\WebSocketServer\Server::class, 'onHandShake'],
+                Event::ON_MESSAGE => [Hyperf\WebSocketServer\Server::class, 'onMessage'],
+                Event::ON_CLOSE => [Hyperf\WebSocketServer\Server::class, 'onClose'],
+            ],
+        ],
+    ],
+];
+
+```
+
+Finally, we can add `HTTP` routing in `ws`.
