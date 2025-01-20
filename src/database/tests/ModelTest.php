@@ -43,6 +43,7 @@ use Hyperf\Database\Query\Processors\Processor;
 use Hyperf\Engine\Channel;
 use Hyperf\Stringable\Str;
 use Hyperf\Support\Traits\InteractsWithTime;
+use HyperfTest\Database\Stubs\Address;
 use HyperfTest\Database\Stubs\DateModelStub;
 use HyperfTest\Database\Stubs\DifferentConnectionModelStub;
 use HyperfTest\Database\Stubs\KeyTypeModelStub;
@@ -63,8 +64,10 @@ use HyperfTest\Database\Stubs\ModelStub;
 use HyperfTest\Database\Stubs\ModelStubWithTrait;
 use HyperfTest\Database\Stubs\ModelStubWithUlid;
 use HyperfTest\Database\Stubs\ModelStubWithUuid;
+use HyperfTest\Database\Stubs\ModelWithMutators;
 use HyperfTest\Database\Stubs\ModelWithoutRelationStub;
 use HyperfTest\Database\Stubs\ModelWithoutTableStub;
+use HyperfTest\Database\Stubs\ModelWithPrimitiveCasts;
 use HyperfTest\Database\Stubs\ModelWithStub;
 use HyperfTest\Database\Stubs\NoConnectionModelStub;
 use HyperfTest\Database\Stubs\User;
@@ -2081,6 +2084,43 @@ class ModelTest extends TestCase
         } finally {
             Relation::morphMap([], false);
         }
+    }
+
+    public function testFillableWithMutators()
+    {
+        $model = new ModelWithMutators();
+        $model->fillable(['full_name', 'full_address']);
+        $model->fill(['id' => 1, 'full_name' => 'John Doe', 'full_address' => '123 Main Street, Anytown']);
+
+        $this->assertNull($model->id);
+        $this->assertSame('John', $model->first_name);
+        $this->assertSame('Doe', $model->last_name);
+        $this->assertSame('123 Main Street', $model->address_line_one);
+        $this->assertSame('Anytown', $model->address_line_two);
+    }
+
+    public function testGuardedWithMutators()
+    {
+        $model = new ModelWithMutators();
+        $model->guard(['id']);
+        $model->fill(['id' => 1, 'full_name' => 'John Doe', 'full_address' => '123 Main Street, Anytown']);
+
+        $this->assertNull($model->id);
+        $this->assertSame('John', $model->first_name);
+        $this->assertSame('Doe', $model->last_name);
+        $this->assertSame('123 Main Street', $model->address_line_one);
+        $this->assertSame('Anytown', $model->address_line_two);
+    }
+
+    public function testAttributesWhichArePrimitiveCasts()
+    {
+        $model = new ModelWithPrimitiveCasts(['id' => 1]);
+        $model->exists = true;
+        $this->assertNull($model->backed_enum);
+        $this->assertInstanceOf(Address::class, $model->address);
+        $this->assertEquals(1, $model->id);
+        $this->assertEquals('ok', $model->this_is_fine);
+        $this->assertEquals('ok', $model->this_is_also_fine);
     }
 
     protected function getContainer()

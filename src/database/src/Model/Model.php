@@ -222,7 +222,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function __sleep()
     {
-        $this->mergeAttributesFromClassCasts();
+        $this->mergeAttributesFromCachedCasts();
 
         $this->classCastCache = [];
 
@@ -614,7 +614,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function save(array $options = []): bool
     {
-        $this->mergeAttributesFromClassCasts();
+        $this->mergeAttributesFromCachedCasts();
 
         $query = $this->newModelQuery();
 
@@ -706,7 +706,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function delete()
     {
-        $this->mergeAttributesFromClassCasts();
+        $this->mergeAttributesFromCachedCasts();
 
         if (is_null($this->getKeyName())) {
             throw new Exception('No primary key defined on model.');
@@ -1227,7 +1227,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function offsetUnset(mixed $offset): void
     {
-        unset($this->attributes[$offset], $this->relations[$offset]);
+        unset($this->attributes[$offset], $this->relations[$offset],$this->attributeCastCache[$offset]);
     }
 
     public function compress(): UnCompressInterface
