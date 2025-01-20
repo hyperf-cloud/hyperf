@@ -1499,6 +1499,11 @@ class ModelTest extends TestCase
         $this->assertEquals('camelCased', $model->camelCased);
         $this->assertEquals('StudlyCased', $model->StudlyCased);
 
+        $this->assertTrue($model->hasAppended('is_admin'));
+        $this->assertTrue($model->hasAppended('camelCased'));
+        $this->assertTrue($model->hasAppended('StudlyCased'));
+        $this->assertFalse($model->hasAppended('not_appended'));
+
         $model->setHidden(['is_admin', 'camelCased', 'StudlyCased']);
         $this->assertEquals([], $model->toArray());
 
