@@ -37,30 +37,31 @@ class Composer
      */
     public static function getLockContent(): Collection
     {
-        if (! self::$content) {
-            if (! $path = self::discoverLockFile()) {
-                throw new RuntimeException('composer.lock not found.');
+        if (self::$content) {
+            return self::$content;
+        }
+
+        if (! $path = self::discoverLockFile()) {
+            throw new RuntimeException('composer.lock not found.');
+        }
+
+        self::$content = collect(json_decode(file_get_contents($path), true));
+        $packages = self::$content->offsetGet('packages') ?? [];
+        $packagesDev = self::$content->offsetGet('packages-dev') ?? [];
+
+        foreach (array_merge($packages, $packagesDev) as $package) {
+            $packageName = $package['name'] ?? '';
+            if (! $packageName) {
+                continue;
             }
 
-            self::$content = collect(json_decode(file_get_contents($path), true));
-            $packages = self::$content->offsetGet('packages') ?? [];
-            $packagesDev = self::$content->offsetGet('packages-dev') ?? [];
-
-            foreach (array_merge($packages, $packagesDev) as $package) {
-                $packageName = '';
-                foreach ($package ?? [] as $key => $value) {
-                    if ($key === 'name') {
-                        $packageName = $value;
-                        continue;
-                    }
-
-                    $packageName && match ($key) {
-                        'extra' => self::$extra[$packageName] = $value,
-                        'scripts' => self::$scripts[$packageName] = $value,
-                        'version' => self::$versions[$packageName] = $value,
-                        default => null,
-                    };
-                }
+            foreach ($package as $key => $value) {
+                match ($key) {
+                    'extra' => self::$extra[$packageName] = $value,
+                    'scripts' => self::$scripts[$packageName] = $value,
+                    'version' => self::$versions[$packageName] = $value,
+                    default => null,
+                };
             }
         }
 
