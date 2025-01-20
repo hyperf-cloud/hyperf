@@ -522,6 +522,16 @@ trait HasAttributes
     }
 
     /**
+     * Discard attribute changes and reset the attributes to their original state.
+     */
+    public function discardChanges(): static
+    {
+        [$this->attributes, $this->changes] = [$this->original, []];
+
+        return $this;
+    }
+
+    /**
      * Sync multiple original attribute with their current values.
      *
      * @param array|string $attributes

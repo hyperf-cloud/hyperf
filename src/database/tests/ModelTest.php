@@ -206,6 +206,23 @@ class ModelTest extends TestCase
         $this->assertFalse(isset($model['with']));
     }
 
+    public function testDiscardChanges()
+    {
+        $user = new ModelStub([
+            'name' => 'Taylor Otwell',
+        ]);
+
+        $this->assertNotEmpty($user->isDirty());
+        $this->assertNull($user->getOriginal('name'));
+        $this->assertSame('Taylor Otwell', $user->getAttribute('name'));
+
+        $user->discardChanges();
+
+        $this->assertEmpty($user->isDirty());
+        $this->assertNull($user->getOriginal('name'));
+        $this->assertNull($user->getAttribute('name'));
+    }
+
     public function testOnly()
     {
         $model = new ModelStub();
