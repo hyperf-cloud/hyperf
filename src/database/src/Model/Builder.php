@@ -21,6 +21,8 @@ use Hyperf\Contract\Arrayable;
 use Hyperf\Contract\LengthAwarePaginatorInterface;
 use Hyperf\Contract\PaginatorInterface;
 use Hyperf\Database\Concerns\BuildsQueries;
+use Hyperf\Database\Exception\MultipleRecordsFoundException;
+use Hyperf\Database\Exception\RecordsNotFoundException;
 use Hyperf\Database\Model\Collection as ModelCollection;
 use Hyperf\Database\Model\Relations\Relation;
 use Hyperf\Database\Query\Builder as QueryBuilder;
@@ -44,7 +46,11 @@ use function Hyperf\Tappable\tap;
  */
 class Builder
 {
-    use BuildsQueries;
+    /** @use BuildsQueries<TModel> */
+    use BuildsQueries {
+        BuildsQueries::sole as baseSole;
+    }
+
     use ForwardsCalls;
     use Concerns\QueriesRelationships;
 
@@ -1038,6 +1044,23 @@ class Builder
         }
 
         return $builder;
+    }
+
+    /**
+     * Execute the query and get the first result if it's the sole matching record.
+     *
+     * @return TModel
+     *
+     * @throws ModelNotFoundException<TModel>
+     * @throws MultipleRecordsFoundException
+     */
+    public function sole(array|string $columns = ['*'])
+    {
+        try {
+            return $this->baseSole($columns);
+        } catch (RecordsNotFoundException) {
+            throw (new ModelNotFoundException())->setModel(get_class($this->model));
+        }
     }
 
     /**

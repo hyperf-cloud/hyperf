@@ -19,6 +19,8 @@ use Hyperf\Conditionable\Conditionable;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\LengthAwarePaginatorInterface;
 use Hyperf\Contract\PaginatorInterface;
+use Hyperf\Database\Exception\MultipleRecordsFoundException;
+use Hyperf\Database\Exception\RecordsNotFoundException;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Collection;
 use Hyperf\Database\Model\Model;
@@ -33,6 +35,11 @@ use RuntimeException;
 
 use function Hyperf\Collection\data_get;
 
+/**
+ * @template TValue
+ * @mixin Builder
+ * @mixin \Hyperf\Database\Query\Builder
+ */
 trait BuildsQueries
 {
     use Conditionable;
@@ -248,6 +255,29 @@ trait BuildsQueries
     public function tap($callback)
     {
         return $this->when(true, $callback);
+    }
+
+    /**
+     * Execute the query and get the first result if it's the sole matching record.
+     * @return TValue
+     * @throws RecordsNotFoundException
+     * @throws MultipleRecordsFoundException
+     */
+    public function sole(array|string $columns = ['*']): mixed
+    {
+        $result = $this->take(2)->get($columns);
+
+        $count = $result->count();
+
+        if ($count === 0) {
+            throw new RecordsNotFoundException();
+        }
+
+        if ($count > 1) {
+            throw new MultipleRecordsFoundException($count);
+        }
+
+        return $result->first();
     }
 
     /**
