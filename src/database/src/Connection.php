@@ -23,6 +23,7 @@ use Hyperf\Collection\Arr;
 use Hyperf\Contracts\Events\Dispatcher;
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Database\Exception\InvalidArgumentException;
+use Hyperf\Database\Exception\MultipleColumnsSelectedException;
 use Hyperf\Database\Exception\QueryException;
 use Hyperf\Database\Exception\UniqueConstraintViolationException;
 use Hyperf\Database\Query\Builder;
@@ -247,6 +248,28 @@ class Connection implements ConnectionInterface
         $records = $this->select($query, $bindings, $useReadPdo);
 
         return array_shift($records);
+    }
+
+    /**
+     * Run a select statement and return the first column of the first row.
+     *
+     * @throws MultipleColumnsSelectedException
+     */
+    public function scalar(string $query, array $bindings = [], bool $useReadPdo = true): mixed
+    {
+        $record = $this->selectOne($query, $bindings, $useReadPdo);
+
+        if (is_null($record)) {
+            return null;
+        }
+
+        $record = (array) $record;
+
+        if (count($record) > 1) {
+            throw new MultipleColumnsSelectedException();
+        }
+
+        return reset($record);
     }
 
     /**
