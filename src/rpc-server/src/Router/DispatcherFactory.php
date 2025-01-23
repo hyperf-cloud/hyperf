@@ -22,6 +22,7 @@ use Hyperf\Di\ReflectionManager;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\MiddlewareManager;
+use Hyperf\Rpc\Contract\GrpcPathGeneratorInterface;
 use Hyperf\Rpc\Contract\PathGeneratorInterface;
 use Hyperf\RpcServer\Annotation\RpcService;
 use Hyperf\RpcServer\Event\AfterPathRegister;
@@ -109,7 +110,11 @@ class DispatcherFactory
             if (Str::startsWith($methodName, '__')) {
                 continue;
             }
-            $path = $this->pathGenerator->generate($prefix, $methodName);
+            if ($this->pathGenerator instanceof GrpcPathGeneratorInterface) {
+                $path = $this->pathGenerator->generate($prefix, $methodName, $annotation->options);
+            } else {
+                $path = $this->pathGenerator->generate($prefix, $methodName);
+            }
             $router->addRoute($path, [
                 $className,
                 $methodName,

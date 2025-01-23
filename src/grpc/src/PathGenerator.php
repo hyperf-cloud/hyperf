@@ -12,15 +12,21 @@ declare(strict_types=1);
 
 namespace Hyperf\Grpc;
 
-use Hyperf\Rpc\Contract\PathGeneratorInterface;
+use Hyperf\Rpc\Contract\GrpcPathGeneratorInterface;
 use Hyperf\Stringable\Str;
 
-class PathGenerator implements PathGeneratorInterface
+class PathGenerator implements GrpcPathGeneratorInterface
 {
-    public function generate(string $service, string $method): string
+    public function generate(string $service, string $method, array $options = []): string
     {
         $handledNamespace = explode('\\', $service);
         $handledNamespace = Str::replaceLast('Service', '', end($handledNamespace));
-        return '/grpc.' . $handledNamespace . '/' . $method;
+
+        $path = '/grpc.' . $handledNamespace . '/' . $method;
+        if (isset($options['package'])) {
+            $path = '/' . $options['package'] . '.' . $handledNamespace . '/' . $method;
+        }
+
+        return $path;
     }
 }
