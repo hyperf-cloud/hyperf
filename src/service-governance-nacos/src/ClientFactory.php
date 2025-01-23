@@ -18,15 +18,18 @@ use Psr\Container\ContainerInterface;
 
 class ClientFactory
 {
-    public function __invoke(ContainerInterface $container): Client
+    public function __invoke(ContainerInterface $container, array $parameters = []): Client
     {
-        $config = $container->get(ConfigInterface::class)->get('services.drivers.nacos', []);
+        if (empty($parameters['config'])) {
+            $config = $container->get(ConfigInterface::class)->get('services.drivers.nacos', []);
+        } else {
+            $config = $parameters['config'];
+        }
         if (! empty($config['uri'])) {
             $baseUri = $config['uri'];
         } else {
             $baseUri = sprintf('http://%s:%d', $config['host'] ?? '127.0.0.1', $config['port'] ?? 8848);
         }
-
         return new Client(new Config([
             'base_uri' => $baseUri,
             'username' => $config['username'] ?? null,

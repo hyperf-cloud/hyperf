@@ -25,6 +25,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
+use function Hyperf\Support\make;
 use function Hyperf\Support\retry;
 
 class NacosDriver implements DriverInterface
@@ -57,7 +58,7 @@ class NacosDriver implements DriverInterface
 
     public function getNodes(string $uri, string $name, array $metadata): array
     {
-        $response = $this->client->instance->list($name, [
+        $response = $this->getConsumersClient($name)->instance->list($name, [
             'groupName' => $this->config->get('services.drivers.nacos.group_name'),
             'namespaceId' => $this->config->get('services.drivers.nacos.namespace_id'),
         ]);
@@ -161,6 +162,40 @@ class NacosDriver implements DriverInterface
         }
 
         return true;
+    }
+
+    protected function getConsumersClient(string $name): Client
+    {
+        static $client;
+        if (empty($client[$name])) {
+            $consumerConfigs = $this->config->get('services.consumers');
+            foreach ($consumerConfigs as $consumerConfig) {
+                if ($consumerConfig['name'] == $name) {
+                    $config = $consumerConfig['registry']['config'] ?? [];
+                    $address = $consumerConfig['registry']['address'] ?? '';
+                    // If there is no dedicated configuration and address not empty
+                    if (empty($config) && $address != '') {
+                        // merge and replace config from services.drivers.nacos
+                        $config = array_merge(
+                            $this->container->get(ConfigInterface::class)->get('services.drivers.nacos', []),
+                            [
+                                'uri' => $address,
+                            ]
+                        );
+                    }
+                    if (! empty($config)) {
+                        $client[$name] = make(Client::class, [
+                            'config' => $config,
+                        ]);
+                    }
+                    break;
+                }
+            }
+            if (empty($client[$name])) {
+                $client[$name] = $this->client;
+            }
+        }
+        return $client[$name];
     }
 
     protected function isNoIpsFound(ResponseInterface $response): bool

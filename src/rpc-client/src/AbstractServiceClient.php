@@ -174,7 +174,7 @@ abstract class AbstractServiceClient
         $consumer = $this->getConsumerConfig();
 
         $registryProtocol = $consumer['registry']['protocol'] ?? null;
-        $registryAddress = $consumer['registry']['address'] ?? null;
+        $registryAddress = $consumer['registry']['address'] ?? '';
         // Current $consumer is the config of the specified consumer.
         if (! empty($registryProtocol) && $this->container->has(DriverManager::class)) {
             $governance = $this->container->get(DriverManager::class)->get($registryProtocol);
