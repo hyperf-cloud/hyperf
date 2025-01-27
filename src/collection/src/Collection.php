@@ -761,10 +761,32 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
 
     /**
      * Get and remove the last item from the collection.
+     * @param int $count
+     * @return null|static<int, TValue>|TValue
      */
-    public function pop()
+    public function pop($count = 1)
     {
-        return array_pop($this->items);
+        if ($count < 1) {
+            return new static();
+        }
+
+        if ($count === 1) {
+            return array_pop($this->items);
+        }
+
+        if ($this->isEmpty()) {
+            return new static();
+        }
+
+        $results = [];
+
+        $collectionCount = $this->count();
+
+        foreach (range(1, min($count, $collectionCount)) as $item) {
+            $results[] = array_pop($this->items);
+        }
+
+        return new static($results);
     }
 
     /**
@@ -958,11 +980,36 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Get and remove the first item from the collection.
      *
-     * @return null|TValue
+     * @param int $count
+     * @return null|static<int, TValue>|TValue
      */
-    public function shift()
+    public function shift($count = 1)
     {
-        return array_shift($this->items);
+        if ($count < 0) {
+            throw new InvalidArgumentException('Number of shifted items may not be less than zero.');
+        }
+
+        if ($this->isEmpty()) {
+            return null;
+        }
+
+        if ($count === 0) {
+            return new static();
+        }
+
+        if ($count === 1) {
+            return array_shift($this->items);
+        }
+
+        $results = [];
+
+        $collectionCount = $this->count();
+
+        foreach (range(1, min($count, $collectionCount)) as $item) {
+            $results[] = array_shift($this->items);
+        }
+
+        return new static($results);
     }
 
     /**
