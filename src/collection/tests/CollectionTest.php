@@ -1354,4 +1354,20 @@ class CollectionTest extends TestCase
             ['id' => 1, 'name' => null],
         ]), json_encode($dataManyNull));
     }
+
+    public function testPopReturnsAndRemovesLastXItemsInCollection()
+    {
+        $c = new Collection(['foo', 'bar', 'baz']);
+
+        $this->assertEquals(new Collection(['baz', 'bar']), $c->pop(2));
+        $this->assertSame('foo', $c->first());
+    }
+
+    public function testShiftReturnsAndRemovesFirstXItemsInCollection()
+    {
+        $data = new Collection(['foo', 'bar', 'baz']);
+
+        $this->assertEquals(new Collection(['foo', 'bar']), $data->shift(2));
+        $this->assertSame('baz', $data->first());
+    }
 }
