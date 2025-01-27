@@ -21,6 +21,7 @@ use Hyperf\Collection\MultipleItemsFoundException;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 use function Hyperf\Collection\collect;
 
@@ -1355,6 +1356,14 @@ class CollectionTest extends TestCase
         ]), json_encode($dataManyNull));
     }
 
+    public function testPopReturnsAndRemovesLastItemInCollection()
+    {
+        $c = new Collection(['foo', 'bar']);
+
+        $this->assertSame('bar', $c->pop());
+        $this->assertSame('foo', $c->first());
+    }
+
     public function testPopReturnsAndRemovesLastXItemsInCollection()
     {
         $c = new Collection(['foo', 'bar', 'baz']);
@@ -1363,11 +1372,51 @@ class CollectionTest extends TestCase
         $this->assertSame('foo', $c->first());
     }
 
+    public function testShiftReturnsAndRemovesFirstItemInCollection()
+    {
+        $data = new Collection(['foo', 'bar']);
+
+        $this->assertSame('foo', $data->shift());
+        $this->assertSame('bar', $data->first());
+        $this->assertSame('bar', $data->shift());
+        $this->assertNull($data->first());
+    }
+
     public function testShiftReturnsAndRemovesFirstXItemsInCollection()
     {
         $data = new Collection(['foo', 'bar', 'baz']);
 
         $this->assertEquals(new Collection(['foo', 'bar']), $data->shift(2));
         $this->assertSame('baz', $data->first());
+
+        $this->assertEquals(new Collection(['foo', 'bar', 'baz']), (new Collection(['foo', 'bar', 'baz']))->shift(6));
+
+        $data = new Collection(['foo', 'bar', 'baz']);
+
+        $this->assertEquals(new Collection([]), $data->shift(0));
+        $this->assertEquals(collect(['foo', 'bar', 'baz']), $data);
+
+        $this->expectException('InvalidArgumentException');
+        (new Collection(['foo', 'bar', 'baz']))->shift(-1);
+
+        $this->expectException('InvalidArgumentException');
+        (new Collection(['foo', 'bar', 'baz']))->shift(-2);
+    }
+
+    public function testShiftReturnsNullOnEmptyCollection()
+    {
+        $itemFoo = new stdClass();
+        $itemFoo->text = 'f';
+        $itemBar = new stdClass();
+        $itemBar->text = 'x';
+
+        $items = collect([$itemFoo, $itemBar]);
+
+        $foo = $items->shift();
+        $bar = $items->shift();
+
+        $this->assertSame('f', $foo?->text);
+        $this->assertSame('x', $bar?->text);
+        $this->assertNull($items->shift());
     }
 }
