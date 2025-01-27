@@ -31,14 +31,14 @@ php bin/hyperf.php
 
 ## 快速打開
 
-增加了一個非常簡單的功能，用內置的 `gen` 命令快速打開創建的文件，支持 `sublime`、`textmate`、`emacs`、`macvim`、`phpstorm`、`idea`、`vscode`、`vscode-insiders`、`vscode-remote`、`vscode-insiders-remote`、`atom`、`nova`、`netbeans`、`xdebug`。
+增加了一個非常簡單的功能，用內置的 `gen` 命令快速打開創建的文件，支持 `sublime`, `textmate`, `cursor`, `emacs`, `macvim`, `phpstorm`, `idea`, `vscode`, `vscode-insiders`, `vscode-remote`, `vscode-insiders-remote`, `atom`, `nova`, `netbeans`, `xdebug`。
 
 還需要在 `config/autoload/devtool.php` 上添加這個配置塊：
 
 ```php
 return [
     /**
-     * Supported IDEs: "sublime", "textmate", "emacs", "macvim", "phpstorm", "idea",
+     * Supported IDEs: "sublime", "textmate", "cursor", "emacs", "macvim", "phpstorm", "idea",
      *        "vscode", "vscode-insiders", "vscode-remote", "vscode-insiders-remote",
      *        "atom", "nova", "netbeans", "xdebug"
      */

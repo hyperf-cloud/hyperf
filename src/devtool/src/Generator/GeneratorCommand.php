@@ -228,6 +228,8 @@ abstract class GeneratorCommand extends Command
                 return 'subl://open?url=file://%s';
             case 'textmate':
                 return 'txmt://open?url=file://%s';
+            case 'cursor':
+                return 'cursor://file/%s';
             case 'emacs':
                 return 'emacs://open?url=file://%s';
             case 'macvim':

@@ -31,14 +31,14 @@ All commands supported by Command can be listed by executing the above command. 
 
 ## Quick Open
 
-Added a very simple function to quickly open created files with the built-in `gen` command, supporting `sublime`, `textmate`, `emacs`, `macvim`, `phpstorm`, `idea`, `vscode`, `vscode-insiders`, `vscode-remote`, `vscode-insiders-remote`, `atom`, `nova`, `netbeans`, `xdebug`.
+Added a very simple function to quickly open created files with the built-in `gen` command, supporting `sublime`, `textmate`, `cursor`, `emacs`, `macvim`, `phpstorm`, `idea`, `vscode`, `vscode-insiders`, `vscode-remote`, `vscode-insiders-remote`, `atom`, `nova`, `netbeans`, `xdebug`.
 
 You also need to add this configuration block on `config/autoload/devtool.php`:
 
 ```php
 return [
     /**
-     * Supported IDEs: "sublime", "textmate", "emacs", "macvim", "phpstorm", "idea",
+     * Supported IDEs: "sublime", "textmate", "cursor", "emacs", "macvim", "phpstorm", "idea",
      *        "vscode", "vscode-insiders", "vscode-remote", "vscode-insiders-remote",
      *        "atom", "nova", "netbeans", "xdebug"
      */

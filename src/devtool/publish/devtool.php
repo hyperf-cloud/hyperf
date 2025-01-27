@@ -12,7 +12,7 @@ declare(strict_types=1);
 use function Hyperf\Support\env;
 
 return [
-    // Supported IDEs: "sublime", "textmate", "emacs", "macvim", "phpstorm", "idea",
+    // Supported IDEs: "sublime", "textmate", "cursor", "emacs", "macvim", "phpstorm", "idea",
     //     "vscode", "vscode-insiders", "vscode-remote", "vscode-insiders-remote",
     //     "atom", "nova", "netbeans", "xdebug"
     'ide' => env('DEVTOOL_IDE', ''),
