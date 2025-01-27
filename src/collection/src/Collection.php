@@ -982,6 +982,8 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
      *
      * @param int $count
      * @return null|static<int, TValue>|TValue
+     *
+     * @throws InvalidArgumentException
      */
     public function shift($count = 1)
     {
